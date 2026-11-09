@@ -381,7 +381,7 @@ footer{padding-block:28px;font:400 .78rem var(--f-mono);color:var(--muted);displ
 .vol{display:flex;align-items:center;gap:8px;flex:none}
 .vol-range{width:96px;flex:none}
 @media (max-width:640px){.vol-range,.mini-bars{display:none}}
-.mini-bars i{flex:1;background:linear-gradient(var(--purple),var(--blue));border-radius:2px;height:8%}
+.mini-bars i{flex:1;background:linear-gradient(var(--purple),var(--blue));border-radius:2px;height:100%;transform:scaleY(.08);transform-origin:50% 100%}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 :root[data-style="aurora"] h1 .grad-text,:root:not([data-style]) h1 .grad-text{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-.01em;padding-right:.1em}
@@ -402,6 +402,11 @@ footer{padding-block:28px;font:400 .78rem var(--f-mono);color:var(--muted);displ
 body *:not(header):not(.mini){backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 header,.mini{backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important}
 ol.tracks.featured li:hover{background:color-mix(in srgb,var(--purple) 12%,var(--surface-solid));border-color:color-mix(in srgb,var(--purple) 45%,var(--line))}
+/* sections without pop-ups are skipped by the browser until they come near the screen */
+#skills,#thesis,#about{content-visibility:auto;contain-intrinsic-size:auto 700px}
+@keyframes navFlash{0%{box-shadow:0 0 0 1px color-mix(in srgb,var(--purple) 70%,transparent),0 0 22px -6px color-mix(in srgb,var(--purple) 60%,transparent)}100%{box-shadow:0 0 0 1px transparent,0 0 22px -6px transparent}}
+section.nav-flash :is(.panel,.cta-band,ol.tracks.featured li){animation:navFlash 1.4s ease-out}
+@media (prefers-reduced-motion:reduce){section.nav-flash :is(.panel,.cta-band,ol.tracks.featured li){animation:none}}
 </style>
 </head>
 <body>
@@ -1055,7 +1060,7 @@ function analyse(){
   beat*=.94;
   // mini player bars
   const bars=miniBars.children;
-  for(let i=0;i<bars.length;i++) bars[i].style.height=(analyser&&playing?Math.max(8,freq[i*2+1]/255*100):8)+"%";
+  for(let i=0;i<bars.length;i++) bars[i].style.transform="scaleY("+(analyser&&playing?Math.max(.08,freq[i*2+1]/255):.08).toFixed(3)+")";   // scaling instead of height: no layout work each frame
 }
 function draw(now){
   const dt=Math.min(50,now-(tLast||now));tLast=now;
@@ -1118,17 +1123,23 @@ function spy(){navTick=false;if(Date.now()<navLock)return;
   setActive(cur)}
 addEventListener("scroll",()=>{if(!navTick){navTick=true;requestAnimationFrame(spy)}},{passive:true});
 navLinks.forEach(a=>a.addEventListener("click",()=>{setActive(a.getAttribute("href").slice(1));navLock=Date.now()+900}));
+/* after jumping from the menu, the boxes in that section glow faintly for a moment so you see where you landed */
+navLinks.forEach(a=>a.addEventListener("click",()=>{const sec=document.getElementById(a.getAttribute("href").slice(1));if(!sec)return;
+  sec.classList.remove("nav-flash");void sec.offsetWidth;setTimeout(()=>sec.classList.add("nav-flash"),80);
+  clearTimeout(sec._flashT);sec._flashT=setTimeout(()=>sec.classList.remove("nav-flash"),1600)}));
 spy();
 function hexA(c,a){a=Math.max(0,Math.min(1,a));
   if(c.startsWith("#")){let h=c.slice(1);if(h.length===3)h=h.split("").map(x=>x+x).join("");const n=parseInt(h,16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
   return c}
 /* the background is redrawn at most 40 times a second while music plays and 20 when it's quiet (the motion is slow, so it looks the same),
    and it stops completely while the tab is hidden */
-let lastDraw=0;
+let lastDraw=0,lastScroll=0;
+addEventListener("scroll",()=>{lastScroll=performance.now()},{passive:true});
 function frame(now){
   if(document.hidden){running=false;return}
   const fps=playing?40:20;
-  if(now-lastDraw>=1000/fps-2){draw(now);lastDraw=now}
+  // while the page is being scrolled the background holds still, so scrolling gets the whole frame budget; it resumes right after
+  if(now-lastScroll>180&&now-lastDraw>=1000/fps-2){draw(now);lastDraw=now}
   if(playing||beat>.02||!reduce){requestAnimationFrame(frame)}else running=false}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)kick()});
 function kick(){if(!running){running=true;requestAnimationFrame(frame)}}
