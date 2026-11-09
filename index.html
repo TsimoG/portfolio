@@ -401,6 +401,7 @@ footer{padding-block:28px;font:400 .78rem var(--f-mono);color:var(--muted);displ
    Cards are nearly opaque instead (looks the same); only the sticky header and the music player keep a light blur */
 body *:not(header):not(.mini){backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 header,.mini{backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important}
+ol.tracks.featured li:hover{background:color-mix(in srgb,var(--purple) 12%,var(--surface-solid));border-color:color-mix(in srgb,var(--purple) 45%,var(--line))}
 </style>
 </head>
 <body>
@@ -1081,21 +1082,24 @@ function drawAuroraSky(dt){
   if(dark){for(const st of auroraStars){const tw=.35+.65*Math.abs(Math.sin(st.ph+phase*4));
     cx.fillStyle=`rgba(255,255,255,${((.18+bands.high*.4)*tw).toFixed(3)})`;cx.fillRect(st.x*W,st.y*H,st.r,st.r)}}
   // the curtains are drawn at a quarter of the resolution and scaled up, which blurs them into soft light
-  const ow=Math.ceil(W/4),oh=Math.ceil(H/4);if(!drawAuroraSky.oc){drawAuroraSky.oc=document.createElement("canvas")}
-  const oc=drawAuroraSky.oc;if(oc.width!==ow||oc.height!==oh){oc.width=ow;oc.height=oh}const ox=oc.getContext("2d");ox.clearRect(0,0,ow,oh);
+  // speed: 1/6 resolution, only the top 45% of the screen (where the aurora lives), and the curtains are only recalculated every other frame
+  const ow=Math.ceil(W/6),sc=H/6,oh=Math.ceil(H*.45/6);if(!drawAuroraSky.oc){drawAuroraSky.oc=document.createElement("canvas")}
+  const oc=drawAuroraSky.oc;let fresh=false;if(oc.width!==ow||oc.height!==oh){oc.width=ow;oc.height=oh;fresh=true}const ox=oc.getContext("2d");
+  drawAuroraSky.n=(drawAuroraSky.n||0)+1;
+  if(fresh||drawAuroraSky.n%2){ox.clearRect(0,0,ow,oh);
   ox.globalCompositeOperation="lighter";
   [[0,.11,1],[1,.21,.7]].forEach(([si,y0,amp])=>{
     const spr=auroraSprites[si],off=si*2.3;
     for(let x=0;x<ow;x++){const p=x/ow;
-      const base=oh*(y0+Math.sin(p*5.2+phase*1.1+off)*.035+Math.sin(p*13-phase*1.7+off)*.012);       // the curtain's wavy lower edge
-      const len=oh*(.22+.1*Math.sin(p*7+phase*1.4+off))*(1+bands.bass*.3+beat*.08)*amp;               // how far up the light reaches
+      const base=sc*(y0+Math.sin(p*5.2+phase*1.1+off)*.035+Math.sin(p*13-phase*1.7+off)*.012);       // the curtain's wavy lower edge
+      const len=sc*(.22+.1*Math.sin(p*7+phase*1.4+off))*(1+bands.bass*.3+beat*.08)*amp;               // how far up the light reaches
       const fold=.5+.5*Math.sin(p*11+phase*1.6+off*3)*Math.sin(p*4-phase*.6);                          // brighter folds along the curtain
       const fade=Math.min(1,p*3,(1-p)*3);
       const al=(.3+fold*.25)*(.75+bands.mid*.5+beat*.12)*fade;
       if(al<.01)continue;ox.globalAlpha=Math.min(1,al);ox.drawImage(spr,x,base-len,1,len*1.08)}});
-  ox.globalAlpha=1;
-  cx.globalCompositeOperation=dark?"lighter":"source-over";cx.globalAlpha=A*colors.alpha;cx.imageSmoothingEnabled=true;cx.imageSmoothingQuality="high";
-  cx.drawImage(oc,0,0,W,H);
+  ox.globalAlpha=1;}
+  cx.globalCompositeOperation=dark?"lighter":"source-over";cx.globalAlpha=A*colors.alpha;cx.imageSmoothingEnabled=true;
+  cx.drawImage(oc,0,0,W,oh*6);
   cx.globalAlpha=1;
   // soft glow under the curtains
   const g=cx.createLinearGradient(0,0,0,H*.4);g.addColorStop(0,hexA(colors.purple,(.04+beat*.02)*A*colors.alpha));g.addColorStop(1,hexA(colors.blue,0));
