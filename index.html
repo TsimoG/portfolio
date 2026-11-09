@@ -5,20 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Simon Nilsson Portfolio</title>
 <meta name="description" content="Simon Nilsson – composer, sound engineer and game developer. Music and sound for games and film, plus game and web development in C# and JavaScript.">
-<!-- link previews (LinkedIn, Discord, mail…). Once the site has its own address, put the full URL in og:image, e.g. https://yourname.com/img/og-image.jpg -->
+<!-- link previews (LinkedIn, Discord, mail…). If the site moves to its own domain, change the three tsimog.github.io addresses below -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Simon Nilsson – Composer, sound engineer & game developer">
 <meta property="og:description" content="Music & sound for games and film">
-<meta property="og:image" content="img/og-image.jpg">
+<meta property="og:image" content="https://tsimog.github.io/portfolio/img/og-image.jpg">
+<meta property="og:url" content="https://tsimog.github.io/portfolio/">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="img/og-image.jpg">
+<meta name="twitter:image" content="https://tsimog.github.io/portfolio/img/og-image.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Instrument+Serif:ital@0;1&display=swap">
 <style>
 /* Layout: content floats on frosted panels over a full-page audio-reactive aurora; one shared player drives every track list */
 :root{
-  --bg:#f7f8ff; --surface:rgba(255,255,255,.84); --surface-solid:#ffffff; --ink:#161a3d; --muted:#585e8c; --line:#dde1f6;
+  --bg:#f7f8ff; --surface:rgba(255,255,255,.95); --surface-solid:#ffffff; --ink:#161a3d; --muted:#585e8c; --line:#dde1f6;
   --blue:#3557f5; --purple:#8237f0; --on-accent:#ffffff; --tint:rgba(53,87,245,.07);
   --aur-alpha:.55;
   --shadow:0 1px 2px rgba(22,26,61,.05),0 14px 34px -14px rgba(53,87,245,.22);
@@ -27,10 +28,10 @@
   --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0a0b22; --surface:rgba(19,21,56,.74); --surface-solid:#14163a; --ink:#eef0ff; --muted:#a4a9d8; --line:#2b2e66;
+  --bg:#0a0b22; --surface:rgba(19,21,56,.92); --surface-solid:#14163a; --ink:#eef0ff; --muted:#a4a9d8; --line:#2b2e66;
   --blue:#6584ff; --purple:#a874ff; --on-accent:#ffffff; --tint:rgba(101,132,255,.10); --aur-alpha:.9; --shadow:0 1px 2px rgba(0,0,0,.3),0 18px 40px -18px rgba(0,0,0,.7); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0a0b22; --surface:rgba(19,21,56,.74); --surface-solid:#14163a; --ink:#eef0ff; --muted:#a4a9d8; --line:#2b2e66;
+  --bg:#0a0b22; --surface:rgba(19,21,56,.92); --surface-solid:#14163a; --ink:#eef0ff; --muted:#a4a9d8; --line:#2b2e66;
   --blue:#6584ff; --purple:#a874ff; --on-accent:#ffffff; --tint:rgba(101,132,255,.10); --aur-alpha:.9; --shadow:0 1px 2px rgba(0,0,0,.3),0 18px 40px -18px rgba(0,0,0,.7); color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -396,6 +397,10 @@ footer{padding-block:28px;font:400 .78rem var(--f-mono);color:var(--muted);displ
 .lightbox button{position:absolute;top:14px;right:16px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;font-size:20px;line-height:1;cursor:pointer}
 .impl-fig a{cursor:zoom-in}
 .mono.code{background:linear-gradient(135deg,var(--blue),var(--purple));font:600 1rem/1 var(--f-mono);letter-spacing:-.04em;color:#fff}
+/* performance: a live blur behind every card has to be recomputed on each frame of the moving background, which made scrolling laggy.
+   Cards are nearly opaque instead (looks the same); only the sticky header and the music player keep a light blur */
+body *:not(header):not(.mini){backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+header,.mini{backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(10px)!important}
 </style>
 </head>
 <body>
@@ -1032,7 +1037,8 @@ let colors={};function readColors(){colors={blue:tok("--blue"),purple:tok("--pur
 readColors();
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{readColors();if(!running)draw(performance.now())});
 new MutationObserver(()=>{readColors();if(!running)draw(performance.now())}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
-function resize(){const d=Math.min(devicePixelRatio||1,1.5);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0)}
+function resize(){const d=1;   // the aurora is soft light, so full retina resolution only costs speed
+  W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0)}
 addEventListener("resize",()=>{resize();if(!running)draw(performance.now())});resize();
 
 function avg(a,b){let s=0;for(let i=a;i<b;i++)s+=freq[i];return s/(b-a)/255}
@@ -1112,7 +1118,15 @@ spy();
 function hexA(c,a){a=Math.max(0,Math.min(1,a));
   if(c.startsWith("#")){let h=c.slice(1);if(h.length===3)h=h.split("").map(x=>x+x).join("");const n=parseInt(h,16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
   return c}
-function frame(now){draw(now);if(playing||sparks.length||beat>.02||!reduce){requestAnimationFrame(frame)}else running=false}
+/* the background is redrawn at most 40 times a second while music plays and 20 when it's quiet (the motion is slow, so it looks the same),
+   and it stops completely while the tab is hidden */
+let lastDraw=0;
+function frame(now){
+  if(document.hidden){running=false;return}
+  const fps=playing?40:20;
+  if(now-lastDraw>=1000/fps-2){draw(now);lastDraw=now}
+  if(playing||beat>.02||!reduce){requestAnimationFrame(frame)}else running=false}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)kick()});
 function kick(){if(!running){running=true;requestAnimationFrame(frame)}}
 kick();
 
