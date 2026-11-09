@@ -1,0 +1,1260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simon Nilsson Portfolio</title>
+<meta name="description" content="Simon Nilsson – composer, sound engineer and game developer. Music and sound for games and film, plus game and web development in C# and JavaScript.">
+<!-- link previews (LinkedIn, Discord, mail…). Once the site has its own address, put the full URL in og:image, e.g. https://yourname.com/img/og-image.jpg -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Simon Nilsson – Composer, sound engineer & game developer">
+<meta property="og:description" content="Music & sound for games and film">
+<meta property="og:image" content="img/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="img/og-image.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Instrument+Serif:ital@0;1&display=swap">
+<style>
+/* Layout: content floats on frosted panels over a full-page audio-reactive aurora; one shared player drives every track list */
+:root{
+  --bg:#f7f8ff; --surface:rgba(255,255,255,.84); --surface-solid:#ffffff; --ink:#161a3d; --muted:#585e8c; --line:#dde1f6;
+  --blue:#3557f5; --purple:#8237f0; --on-accent:#ffffff; --tint:rgba(53,87,245,.07);
+  --aur-alpha:.55;
+  --shadow:0 1px 2px rgba(22,26,61,.05),0 14px 34px -14px rgba(53,87,245,.22);
+  --f-display:"Sora","Segoe UI",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0b22; --surface:rgba(19,21,56,.74); --surface-solid:#14163a; --ink:#eef0ff; --muted:#a4a9d8; --line:#2b2e66;
+  --blue:#6584ff; --purple:#a874ff; --on-accent:#ffffff; --tint:rgba(101,132,255,.10); --aur-alpha:.9; --shadow:0 1px 2px rgba(0,0,0,.3),0 18px 40px -18px rgba(0,0,0,.7); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0b22; --surface:rgba(19,21,56,.74); --surface-solid:#14163a; --ink:#eef0ff; --muted:#a4a9d8; --line:#2b2e66;
+  --blue:#6584ff; --purple:#a874ff; --on-accent:#ffffff; --tint:rgba(101,132,255,.10); --aur-alpha:.9; --shadow:0 1px 2px rgba(0,0,0,.3),0 18px 40px -18px rgba(0,0,0,.7); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
+#aurora{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
+.wrap{max-width:1080px;margin:0 auto;position:relative;z-index:1}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--purple);outline-offset:3px;border-radius:4px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface-solid)}
+.grad-text{background:linear-gradient(95deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--surface);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar{display:flex;align-items:center;gap:16px;padding-block:12px;flex-wrap:wrap;max-width:1080px;margin:0 auto}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:1rem;letter-spacing:-.015em;text-decoration:none;white-space:nowrap}
+.logo-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--purple));display:grid;place-items:center;flex:none;box-shadow:0 6px 16px -6px color-mix(in srgb,var(--purple) 70%,transparent)}
+.logo-mark svg{width:16px;height:16px;fill:var(--on-accent)}
+.logo .last{color:var(--muted);font-weight:500}
+nav{display:flex;gap:2px;flex-wrap:wrap;margin-right:auto}
+nav a{font-size:.9rem;font-weight:500;text-decoration:none;padding:6px 10px;border-radius:6px;color:var(--muted)}
+nav a:hover,nav a.active{color:var(--ink);background:var(--tint)}
+nav a.active{box-shadow:inset 0 -2px 0 var(--purple)}
+.lang{position:relative}
+.snd-btn{width:34px;height:32px;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;background:var(--surface-solid);color:var(--ink);cursor:pointer;padding:0}
+.snd-btn:hover{border-color:var(--purple);color:var(--purple)}
+.snd-btn svg{width:18px;height:18px;fill:currentColor}
+.snd-btn[aria-pressed="true"] .snd-off,.snd-btn[aria-pressed="false"] .snd-on{display:none}
+.snd-btn[aria-pressed="false"]{color:var(--muted)}
+.lang-btn{display:flex;align-items:center;gap:8px;font:600 .78rem/1 var(--f-mono);letter-spacing:.06em;color:var(--ink);background:var(--surface-solid);border:1px solid var(--line);border-radius:8px;padding:7px 10px;cursor:pointer}
+.lang-btn:hover{border-color:var(--purple)}
+.lang-btn .chev{width:12px;height:12px;color:var(--muted);transition:transform .2s}
+.lang-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.flag{display:inline-block;width:22px;height:16px;border-radius:3px;overflow:hidden;box-shadow:0 0 0 1px var(--line);flex:none;line-height:0}
+.flag svg{width:100%;height:100%;display:block}
+.lang-menu{position:absolute;right:0;top:calc(100% + 6px);min-width:190px;margin:0;padding:6px;list-style:none;background:var(--surface-solid);border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 36px rgba(20,22,70,.22);z-index:20}
+.lang-menu li{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:.92rem}
+.lang-menu li:hover,.lang-menu li:focus{background:var(--tint);outline:none}
+.lang-menu li:focus-visible{outline:2px solid var(--purple);outline-offset:-2px}
+.lang-menu li[aria-selected="true"]{color:var(--purple);font-weight:600}
+.lang-menu li small{margin-left:auto;font:400 .72rem var(--f-mono);color:var(--muted)}
+@media (max-width:680px){nav{order:3;width:100%;justify-content:space-between;margin-right:0}#stylewrap{margin-left:auto}}
+#stylewrap{display:none}
+
+/* hero */
+.hero{padding-block:88px 64px;display:grid;grid-template-columns:minmax(0,760px)}
+@media (max-width:860px){.hero{padding-block:52px 36px}}
+.hero-text{display:grid;gap:24px;min-width:0}
+.hero-stats{display:flex;gap:30px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:20px}
+.hero-stats div{display:grid}
+.hero-stats b{font:700 1.7rem/1.1 var(--f-display);font-variant-numeric:tabular-nums;background:linear-gradient(95deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-stats span{font-size:.8rem;color:var(--muted)}
+.orb-col{display:grid;gap:8px;justify-items:center;min-width:0}
+.orb-wrap{position:relative;width:min(100%,380px);aspect-ratio:1;max-width:100%}
+#orb{width:100%;height:100%;display:block}
+.orb-cap{text-align:center;font:400 .72rem/1.4 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.orb-cap strong{display:block;color:var(--ink);font:600 .95rem var(--f-body);letter-spacing:0;text-transform:none}
+.kicker{font:600 .75rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--purple)}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(2.6rem,6.6vw,5rem);line-height:.98;letter-spacing:-.035em;margin:0;text-wrap:balance}
+.lead{max-width:56ch;font-size:1.15rem;color:var(--muted);margin:0}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.btn{font-weight:600;text-decoration:none;padding:12px 18px;border-radius:10px;border:1px solid var(--line);font-size:.95rem;cursor:pointer;background:var(--surface);color:var(--ink);font-family:inherit;backdrop-filter:blur(8px)}
+.btn.primary{background:linear-gradient(135deg,var(--blue),var(--purple));border-color:transparent;color:var(--on-accent)}
+/* a thin fading line under the intro that separates it from the games */
+.hero-rule{width:min(100%,480px);height:2px;margin-top:10px;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--purple) 45%,transparent)}
+.hint{font:400 .78rem/1.4 var(--f-mono);color:var(--muted);display:flex;align-items:center;gap:8px}
+.hint i{width:8px;height:8px;border-radius:50%;background:var(--purple);display:inline-block}
+
+/* sections */
+section{padding-block:56px}
+section[id]{scroll-margin-top:64px}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+h2{font-family:var(--f-display);font-weight:700;font-size:clamp(1.7rem,4vw,2.5rem);letter-spacing:-.025em;margin:0;line-height:1.1}
+/* no accent mark above section headings (in any theme) */
+h2::before{content:none!important}
+.sec-head p{margin:0;color:var(--muted);max-width:46ch}
+.title-row{display:flex;align-items:flex-end;gap:12px}
+/* a quiet number after the Games heading: no box, just muted small type */
+.h-count{font:500 .5em/1 var(--f-mono);color:var(--muted);vertical-align:super;margin-left:.35em;letter-spacing:0;text-transform:none}
+.count-badge{font:600 .78rem/1 var(--f-mono);padding:5px 9px;border-radius:999px;background:var(--tint);border:1px solid var(--line);color:var(--muted);margin-bottom:3px;font-variant-numeric:tabular-nums}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:var(--shadow)}
+.game,.skill{transition:transform .25s ease,border-color .25s ease}
+.game:hover,.skill:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--purple) 45%,var(--line))}
+.cover{overflow:hidden;line-height:0;border-radius:17px 17px 0 0;position:relative}
+.cover canvas{transition:transform .6s ease}
+.game:hover .cover canvas,.game:hover .cover img{transform:scale(1.04)}
+.cover img{display:block;width:100%;height:auto;aspect-ratio:12/5;object-fit:cover;max-width:100%;transition:transform .6s ease,filter .45s ease}
+
+/* games */
+/* one row: four columns on wide screens, a swipeable row on smaller ones */
+.games{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:stretch}
+/* game info is folded away until the visitor asks for it */
+/* More info opens a floating card under the game with its artwork and details; the game cards themselves never change size */
+.info-panel{display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:8;overflow:auto;max-height:min(70vh,560px);padding:0 0 16px;flex-direction:column;gap:10px;
+  background:var(--surface-solid);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 44px -14px rgba(22,26,61,.38),0 2px 6px rgba(22,26,61,.08);scrollbar-width:thin;animation:dropIn .16s ease-out}
+.info-panel > :not(.cover){margin-inline:16px}
+.info-panel > .cover{border-radius:13px 13px 0 0;margin-bottom:4px}
+.info-panel > :first-child:not(.cover){margin-top:16px}
+.game.info-open{z-index:6}
+.game.info-open:hover{transform:none}
+.game.info-open .info-panel{display:flex}
+.info-panel p{margin:0;color:var(--muted);font-size:.86rem;line-height:1.5}
+@media (prefers-reduced-motion:reduce){.info-panel{animation:none}}
+/* slim gradient scrollbars for the info panels and soundtrack lists */
+.info-panel,details.ost[open] > ol.tracks{overscroll-behavior:contain;scrollbar-width:auto;scrollbar-color:auto}
+@supports not selector(::-webkit-scrollbar){.info-panel,details.ost[open] > ol.tracks{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--purple) 60%,transparent) transparent}}
+.info-panel::-webkit-scrollbar,details.ost[open] > ol.tracks::-webkit-scrollbar{width:10px}
+.info-panel::-webkit-scrollbar-track,details.ost[open] > ol.tracks::-webkit-scrollbar-track{background:transparent;margin-block:10px}
+.info-panel::-webkit-scrollbar-thumb,details.ost[open] > ol.tracks::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--blue),var(--purple));border-radius:10px;border:3px solid transparent;background-clip:padding-box}
+.info-panel::-webkit-scrollbar-thumb:hover,details.ost[open] > ol.tracks::-webkit-scrollbar-thumb:hover{border-width:2px}
+.actions{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:auto;padding-top:4px}
+.game .actions .btn{margin-top:0}
+.info-btn{background:none;border:0;color:var(--muted);font:600 .82rem var(--f-body);cursor:pointer;display:inline-flex;gap:6px;align-items:center;padding:4px 0;text-align:left}
+.info-btn:hover,.game.info-open .info-btn{color:var(--purple)}
+.info-btn .ichev{font-style:normal;transition:transform .2s}
+.game.info-open .info-btn .ichev{transform:rotate(180deg)}
+.games .game h3{font-size:1.05rem}
+.games .game-body{padding:14px 15px 16px}
+.games .game-body p{font-size:.86rem}
+@media (max-width:999px){
+  .games{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;align-items:stretch;padding-block:4px 12px;
+    margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));scroll-padding-left:max(16px,env(safe-area-inset-left,0px))}
+  .games > .game{flex:0 0 min(300px,80vw);scroll-snap-align:start}
+  .games .info-panel{position:static;max-height:none;border:0;border-top:1px solid var(--line);border-radius:0;box-shadow:none}
+  .games details.ost[open] > ol.tracks{position:static;border:0;border-top:1px solid var(--line);border-radius:0 0 17px 17px;box-shadow:none;max-height:300px;animation:none}
+}
+.game dl.specs{font-size:.82rem;gap:2px 12px}
+.game dl.specs dt{line-height:1.8}
+.game{display:flex;flex-direction:column;position:relative}
+.game:has(details.ost[open]){z-index:5}
+.game:has(details.ost[open]):hover{transform:none}
+.game canvas{display:block;width:100%;height:auto;aspect-ratio:12/5;object-fit:cover;max-width:100%}
+.game-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:9px;min-width:0;flex:1}
+.game-body p{font-size:.92rem;line-height:1.5}
+.game .btn{padding:9px 14px;font-size:.86rem}
+.game-body .tags{min-height:22px;flex-wrap:nowrap;gap:4px}
+.game-body .tag{font-size:.64rem;padding:4px 6px;white-space:nowrap;flex:none}
+/* tags that don't fit fold into a "+N" chip that shows them on hover or tap */
+.tag-more{position:relative;cursor:default;user-select:none;font-family:var(--f-mono);background:var(--tint);color:var(--purple);border-color:color-mix(in srgb,var(--purple) 35%,var(--line))}
+.tag-pop{position:absolute;bottom:calc(100% + 9px);right:-5px;display:flex;gap:4px;padding:6px;background:var(--surface-solid);border:1px solid var(--line);border-radius:10px;
+  box-shadow:0 12px 26px -10px rgba(22,26,61,.35),0 2px 6px rgba(22,26,61,.08);opacity:0;visibility:hidden;transform:translateY(4px) scale(.97);transform-origin:bottom right;
+  transition:opacity .15s ease,transform .15s ease,visibility .15s;z-index:7;pointer-events:none}
+.tag-pop::after{content:"";position:absolute;top:100%;right:14px;width:9px;height:9px;background:var(--surface-solid);border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:translateY(-5px) rotate(45deg)}
+.tag-more:hover .tag-pop{opacity:1;visibility:visible;transform:none}
+.tag-pop .tag{color:var(--ink);background:var(--tint);border-color:var(--line)}
+.game h3{font-family:var(--f-display);font-weight:700;font-size:1.18rem;margin:0;letter-spacing:-.01em}
+.game p{margin:0;color:var(--muted)}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font:500 .72rem/1 var(--f-mono);padding:6px 8px;border-radius:5px;border:1px solid var(--line);color:var(--muted);background:var(--surface-solid)}
+dl.specs{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:.88rem}
+dl.specs dt{font:600 .7rem/1.9 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+dl.specs dd{margin:0;min-width:0}
+.game .btn{align-self:flex-start;margin-top:auto}
+.game .role{font-size:.8rem;font-weight:600;color:var(--purple);margin-top:-5px}
+.game p.milestone{display:flex;gap:8px;align-items:flex-start;font-size:.9rem;font-weight:600;color:var(--ink);background:var(--tint);border:1px solid color-mix(in srgb,var(--purple) 30%,var(--line));border-radius:10px;padding:7px 11px;font-size:.84rem}
+.milestone svg{width:15px;height:15px;flex:none;margin-top:3px;fill:var(--purple)}
+.game dl.specs{margin-bottom:4px}
+details.ost{border-top:1px solid var(--line);position:relative}
+/* the open soundtrack floats over the page below instead of stretching the row */
+details.ost[open] > ol.tracks{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:6;max-height:min(340px,60vh);overflow:auto;padding:6px;
+  background:var(--surface-solid);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 44px -14px rgba(22,26,61,.38),0 2px 6px rgba(22,26,61,.08);
+  scrollbar-width:thin;scrollbar-color:var(--line) transparent;animation:dropIn .16s ease-out}
+@keyframes dropIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){details.ost[open] > ol.tracks{animation:none}}
+details.ost > ol.tracks li{grid-template-columns:26px minmax(0,1fr) auto auto;gap:10px;padding:7px 9px;border-top:0;border-radius:9px}
+details.ost > ol.tracks li + li{margin-top:2px}
+details.ost .t-btn{width:26px;height:26px}
+details.ost .t-btn svg{width:9px;height:9px}
+details.ost .t-name{font-size:.86rem;font-weight:600;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+details.ost .t-name small{font-size:.72rem;margin-top:1px}
+details.ost li.on{background:color-mix(in srgb,var(--purple) 10%,transparent)}
+details.ost[open] summary{color:var(--purple)}
+details.ost.no-music summary{cursor:default;color:var(--muted)}
+details.ost.no-music summary .eq{opacity:.35;filter:grayscale(1)}
+details.ost[open] summary .chev{color:var(--purple)}
+details.ost summary{list-style:none;cursor:pointer;padding:11px 18px;display:flex;align-items:center;gap:10px;font-weight:600;font-size:.92rem}
+details.ost summary::-webkit-details-marker{display:none}
+details.ost summary .chev{margin-left:auto;transition:transform .2s;color:var(--muted);flex:none;padding-left:6px}
+/* keep the arrow inside the card: the track count shrinks first when space runs out */
+details.ost summary{min-width:0}
+details.ost summary .eq{flex:none}
+details.ost summary > span[data-i="ost"]{white-space:nowrap;flex:none}
+details.ost summary .t-meta{flex:none;font:600 .68rem/1 var(--f-mono);padding:3px 7px;border-radius:999px;background:var(--tint);border:1px solid var(--line);color:var(--muted)}
+details.ost.no-music summary > span[data-i]{white-space:normal;line-height:1.35}
+details.ost[open] summary .chev{transform:rotate(180deg)}
+details.ost summary .eq{display:flex;gap:2px;align-items:end;height:14px}
+details.ost summary .eq b{width:3px;background:linear-gradient(var(--purple),var(--blue));border-radius:1px}
+details.ost summary .eq b:nth-child(1){height:60%}details.ost summary .eq b:nth-child(2){height:100%}details.ost summary .eq b:nth-child(3){height:40%}
+
+/* track lists (shared) */
+ol.tracks{list-style:none;margin:0;padding:0}
+/* where a track plays in its game: a soft tinted tag in the theme colour */
+.t-where{font:600 .74rem/1 var(--f-body);color:var(--purple);background:color-mix(in srgb,var(--purple) 12%,transparent);padding:5px 9px;border-radius:6px;white-space:nowrap;justify-self:end}
+ol.tracks.featured li > .t-where{display:none}
+ol.tracks li{display:grid;grid-template-columns:2.25rem minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:12px 22px;border-top:1px solid var(--line);cursor:pointer}
+ol.tracks li:hover{background:var(--tint)}
+.t-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--surface-solid);display:grid;place-items:center;color:var(--ink);cursor:pointer;padding:0}
+.t-btn svg{width:11px;height:11px;fill:currentColor}
+li.on .t-btn{background:linear-gradient(135deg,var(--blue),var(--purple));border-color:transparent;color:var(--on-accent)}
+li.on .t-name{color:var(--purple)}
+.t-name{font-weight:600;min-width:0}
+.t-name small{display:block;font-weight:400;color:var(--muted);font-size:.82rem}
+.t-meta{font:400 .75rem var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.prog{display:flex;align-items:center;gap:10px;margin-top:10px;font:400 .72rem var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.mini .prog{margin-top:4px}
+.seek{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:4px;border-radius:2px;margin:0;cursor:pointer;
+  background:linear-gradient(90deg,var(--blue),var(--purple)) 0 0/var(--p,0%) 100% no-repeat,var(--line)}
+.seek::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--purple);border:2px solid var(--surface-solid)}
+.seek::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:var(--purple);border:2px solid var(--surface-solid)}
+
+/* music section */
+.player{overflow:hidden}
+.now{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;padding:22px;border-bottom:1px solid var(--line)}
+.big-play{width:58px;height:58px;border-radius:50%;border:0;background:linear-gradient(135deg,var(--blue),var(--purple));color:var(--on-accent);cursor:pointer;display:grid;place-items:center}
+.big-play svg{width:22px;height:22px;fill:currentColor}
+.big-play.orb-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:80px;height:80px;box-shadow:0 12px 30px -8px color-mix(in srgb,var(--purple) 70%,transparent);transition:transform .2s ease}
+.big-play.orb-play:hover{transform:translate(-50%,-50%) scale(1.06)}
+.big-play.orb-play svg{width:28px;height:28px}
+.now-title{font-family:var(--f-display);font-weight:700;font-size:1.1rem;margin:0}
+.now-sub{font:400 .78rem/1.5 var(--f-mono);color:var(--muted);margin:0}
+.player ol.tracks li:first-child{border-top:0}
+.feat-lbl{font:600 .72rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+ol.tracks.featured{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:12px;margin-bottom:24px}
+ol.tracks.featured li > .t-meta{display:none}
+ol.tracks.featured li{grid-template-columns:30px minmax(0,1fr);gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+ol.tracks.featured li.on{border-color:var(--purple)}
+ol.tracks.featured .t-name{line-height:1.3}
+ol.tracks.featured .t-name small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music-ctrl{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;min-width:0}
+.chip{font:600 .82rem/1 var(--f-body);padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;backdrop-filter:blur(8px)}
+.chip:hover{color:var(--ink)}
+.chip b{font:400 .72rem var(--f-mono);margin-left:6px;opacity:.75}
+.chip[aria-pressed="true"]{background:linear-gradient(135deg,var(--blue),var(--purple));color:var(--on-accent);border-color:transparent}
+.sort{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted)}
+.sort-btn{display:flex;align-items:center;gap:8px;font:600 .85rem var(--f-body);color:var(--ink);background:var(--surface-solid);border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer;transition:border-color .2s}
+.sort-btn:hover,.sort-btn[aria-expanded="true"]{border-color:var(--purple)}
+.sort-btn .ico{width:14px;height:14px;color:var(--purple);flex:none}
+.sort-btn .chev{width:12px;height:12px;color:var(--muted);transition:transform .2s;flex:none}
+.sort-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+#sortmenu{min-width:230px}
+#sortmenu li{color:var(--ink)}
+#sortmenu li[aria-selected="true"]::after{content:"✓";margin-left:auto;color:var(--purple);font-weight:700}
+ol.tracks li.grp{display:flex;align-items:center;gap:10px;cursor:default;padding:11px 22px;background:var(--tint);font:700 .8rem/1 var(--f-display);letter-spacing:.03em;color:var(--ink)}
+ol.tracks li.grp::before{content:"";width:4px;height:16px;border-radius:2px;background:var(--blue);flex:none}
+ol.tracks li.grp:hover{background:var(--tint)}
+ol.tracks li.sub{display:flex;align-items:center;gap:12px;cursor:default;padding:16px 22px 8px;font:600 .72rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+ol.tracks li.sub:hover{background:none;color:var(--ink)}
+ol.tracks li.more{display:flex;justify-content:center;padding:16px 22px;cursor:default}
+ol.tracks li.more:hover{background:none}
+.more-btn{font-size:.88rem;padding:10px 18px}
+.more-btn:hover{border-color:var(--purple);color:var(--purple)}
+ol.tracks li.grp,ol.tracks li.sub{cursor:pointer;user-select:none}
+ol.tracks li.grp:hover{background:color-mix(in srgb,var(--purple) 20%,transparent)}
+.gchev{font-style:normal;color:var(--muted);transition:transform .2s;line-height:1}
+ol.tracks li.grp .gchev{margin-left:auto}
+/* game rows under Game soundtrack: an indented bar in the same style as the genre bars */
+ol.tracks li.sub{padding:11px 22px 11px 38px;background:color-mix(in srgb,var(--blue) 7%,transparent);border-top:1px solid var(--line);
+  font:700 .8rem/1 var(--f-display);letter-spacing:.03em;text-transform:none;color:var(--ink);gap:10px}
+ol.tracks li.sub::before{content:"";width:3px;height:14px;border-radius:2px;background:var(--blue);opacity:.7;flex:none}
+ol.tracks li.sub .sub-chip{display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-weight:700;transition:color .2s}
+ol.tracks li.sub:hover .sub-chip{color:var(--purple)}
+ol.tracks li.sub:hover{background:color-mix(in srgb,var(--purple) 10%,transparent)}
+ol.tracks li.sub[aria-expanded="false"] .sub-chip{color:var(--muted)}
+ol.tracks li.sub .gchev{color:inherit}
+ol.tracks li[aria-expanded="false"] .gchev{transform:rotate(-90deg)}
+ol.tracks li.grp:focus-visible,ol.tracks li.sub:focus-visible{outline:2px solid var(--purple);outline-offset:-2px}
+ol.tracks li.grp + li.sub{border-top:0}
+ol.tracks li.grp span{font:600 .7rem/1 var(--f-mono);color:var(--muted);background:var(--surface-solid);border:1px solid var(--line);border-radius:999px;padding:3px 8px}
+.note{font-size:.85rem;color:var(--muted);margin-top:14px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;background:var(--surface)}
+
+/* skills */
+/* three equal columns; the game engines line up under FL Studio and Wwise */
+.skills{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media (max-width:900px){.skills{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.skills{grid-template-columns:1fr}}
+.skill{padding:22px;display:grid;gap:10px;align-content:start}
+.skill-top{display:flex;align-items:center;gap:14px}
+.mono{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font:700 .95rem var(--f-display);color:var(--on-accent);flex:none}
+/* tool logos sit on a white tile so they read the same in every theme */
+.mono.logo{background:#ffffff;padding:6px;border:1px solid var(--line)}
+.mono.logo img{width:100%;height:100%;object-fit:contain;display:block}
+.skill h3{font-family:var(--f-display);font-weight:700;font-size:1.1rem;margin:0}
+.cat{font:600 .68rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--purple)}
+.skill p{margin:0;color:var(--muted);font-size:.95rem}
+.used{font-size:.82rem;color:var(--muted)}
+.used b{color:var(--ink);font-weight:600}
+
+/* thesis */
+.thesis{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);overflow:hidden}
+@media (max-width:820px){.thesis{grid-template-columns:1fr}}
+.th-main{padding:30px;display:grid;gap:14px;align-content:start;min-width:0}
+.th-main h3{font-family:var(--f-display);font-weight:700;font-size:clamp(1.25rem,2.6vw,1.6rem);line-height:1.25;margin:0;letter-spacing:-.015em;text-wrap:balance}
+.th-orig{font-size:.88rem;color:var(--muted);margin:0;font-style:italic}
+.th-orig span{font-style:normal;font:600 .68rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px}
+.th-main p.sum{margin:0;color:var(--ink);max-width:62ch}
+.stats{display:flex;gap:28px;flex-wrap:wrap;padding-top:6px}
+.stats div{display:grid}
+.stats b{font:700 1.8rem/1.1 var(--f-display);font-variant-numeric:tabular-nums;background:linear-gradient(95deg,var(--blue),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stats span{font-size:.82rem;color:var(--muted)}
+.th-side{padding:30px;background:var(--tint);border-left:1px solid var(--line);display:grid;gap:18px;align-content:start;min-width:0}
+@media (max-width:820px){.th-side{border-left:0;border-top:1px solid var(--line)}}
+.th-side dl.specs{grid-template-columns:1fr;gap:2px}
+.th-side dl.specs dd{margin-bottom:10px}
+.th-main .btn{justify-self:start}
+
+/* about / contact */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px 40px;padding:32px}
+.two p{max-width:60ch;margin:0 0 12px}
+.cta-band{border-radius:22px;padding:44px clamp(24px,5vw,48px);background:linear-gradient(125deg,var(--blue),var(--purple));display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;box-shadow:var(--shadow)}
+.cta-band > div{min-width:0}
+.cta-band h2{color:#ffffff;font-size:clamp(1.8rem,4.5vw,2.8rem)}
+.cta-band h2::before{background:rgba(255,255,255,.75)}
+.cta-band p{margin:10px 0 0;color:rgba(255,255,255,.88);max-width:48ch}
+.cta-band .btn{background:#ffffff;color:#2a2280;border-color:transparent;backdrop-filter:none}
+.mail{display:flex;gap:14px;align-items:center;flex-wrap:wrap;min-width:0}
+.mail-addr{font:600 clamp(1.05rem,2.4vw,1.35rem)/1.3 var(--f-display);color:#ffffff;text-decoration:none;user-select:all;overflow-wrap:anywhere;border-bottom:2px solid rgba(255,255,255,.5);padding-bottom:2px}
+.mail-addr:hover{border-bottom-color:#ffffff}
+.li-link{color:#ffffff;font-weight:600;text-decoration:none;padding:9px 14px;border:1px solid rgba(255,255,255,.45);border-radius:10px;background:rgba(255,255,255,.14);transition:background .2s}
+.li-link:hover{background:rgba(255,255,255,.28)}
+.copy-icon{width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);color:#ffffff;display:grid;place-items:center;cursor:pointer;padding:0;transition:background .2s}
+.copy-icon:hover{background:rgba(255,255,255,.28)}
+.copy-icon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+footer{padding-block:28px;font:400 .78rem var(--f-mono);color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* mini player */
+.mini{position:fixed;left:0;right:0;bottom:0;z-index:7;background:var(--surface);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);
+  padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.mini-in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:14px}
+.mini .big-play{width:42px;height:42px}
+.mini-ctrl{display:flex;align-items:center;gap:8px;flex:none}
+.skip{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface-solid);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
+.skip:hover{border-color:var(--purple);color:var(--purple)}
+.skip svg{width:14px;height:14px;fill:currentColor}
+.rep{position:relative;color:var(--muted)}
+.rep[aria-pressed="true"]{color:var(--purple);border-color:var(--purple);background:var(--tint)}
+.rep-one{position:absolute;right:3px;bottom:2px;font:700 .55rem/1 var(--f-mono);display:none}
+.rep[aria-pressed="true"] .rep-one{display:block}
+.mini .big-play svg{width:16px;height:16px}
+.mini-txt{min-width:0;flex:1}
+.mini-txt strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-txt span{font:400 .75rem var(--f-mono);color:var(--muted)}
+.mini-bars{display:flex;gap:3px;height:26px;align-items:end;width:min(180px,30vw)}
+.vol{display:flex;align-items:center;gap:8px;flex:none}
+.vol-range{width:96px;flex:none}
+@media (max-width:640px){.vol-range,.mini-bars{display:none}}
+.mini-bars i{flex:1;background:linear-gradient(var(--purple),var(--blue));border-radius:2px;height:8%}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+:root[data-style="aurora"] h1 .grad-text,:root:not([data-style]) h1 .grad-text{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-.01em;padding-right:.1em}
+:root[data-style="aurora"] h1,:root:not([data-style]) h1{letter-spacing:-.05em}
+
+.info-panel p.impl-lbl{font:600 .68rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--purple);margin-top:6px;padding-top:12px;border-top:1px solid var(--line)}
+.info-panel p.impl-fig{display:grid;gap:6px;font-size:.74rem}
+.impl-fig a{display:block;line-height:0;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.impl-fig img{width:100%;height:auto;display:block;transition:transform .3s}
+.impl-fig a:hover img{transform:scale(1.03)}
+.lightbox{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px;background:rgba(6,7,24,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);cursor:zoom-out;animation:dropIn .16s ease-out}
+.lightbox img{max-width:min(1600px,100%);max-height:calc(100vh - 80px);width:auto;height:auto;border-radius:10px;box-shadow:0 30px 80px -20px rgba(0,0,0,.7)}
+.lightbox button{position:absolute;top:14px;right:16px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;font-size:20px;line-height:1;cursor:pointer}
+.impl-fig a{cursor:zoom-in}
+.mono.code{background:linear-gradient(135deg,var(--blue),var(--purple));font:600 1rem/1 var(--f-mono);letter-spacing:-.04em;color:#fff}
+</style>
+</head>
+<body>
+
+<canvas id="aurora" aria-hidden="true"></canvas>
+
+<header><div class="bar">
+  <nav>
+    <a href="#games" data-i="nav_games">Games</a>
+    <a href="#music" data-i="nav_music">Music</a>
+    <a href="#skills" data-i="nav_skills">Skills</a>
+    <a href="#thesis" data-i="nav_thesis">Thesis</a>
+    <a href="#about" data-i="nav_about">About</a>
+    <a href="#contact" data-i="nav_contact">Contact</a>
+  </nav>
+  <div class="lang" id="stylewrap"><button type="button" class="snd-btn" id="stylebtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Switch visual style" title="Switch visual style"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="9" r="5"/><path d="M15 13l5.5 8h-11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="14" y="3" width="6" height="6" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+    <ul class="lang-menu" id="stylemenu" role="listbox" aria-label="Visual style" hidden></ul></div>
+  <button type="button" class="snd-btn" id="sndbtn" aria-pressed="true" aria-label="Interface sounds" title="Interface sounds"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 6.5l12 5.6-5 1.4-2.2 4.9z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path class="snd-on" d="M15.2 4.6a3.4 3.4 0 0 1 2.9 2.9M16.4 1.8a6.4 6.4 0 0 1 5.6 5.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path class="snd-off" d="M16.2 2.6l4.6 4.6M20.8 2.6l-4.6 4.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+  <div class="lang" id="lang">
+    <button type="button" class="lang-btn" id="langbtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Language"><span class="flag" id="langflag"></span><span id="langcode">EN</span><svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+    <ul class="lang-menu" id="langmenu" role="listbox" aria-label="Language" hidden></ul>
+  </div>
+</div></header>
+
+<main class="wrap" id="top">
+  <div class="hero">
+    <div class="hero-text">
+      <div class="kicker" data-i="hero_kicker">Composer · Sound engineer · Game developer</div>
+      <h1>Simon <span class="grad-text">Nilsson</span></h1>
+      <p class="lead" data-i="hero_lead">I write music for games and help build them. Below are the games I've worked on and a selection of my tracks.</p>
+      <div class="hero-rule" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <section id="games">
+    <div class="sec-head">
+      <h2><span data-i="games_title">Games</span><span class="h-count" id="cnt-games" aria-hidden="true">4</span></h2>
+    </div>
+    <div class="games">
+      <article class="game panel">
+        <div class="cover"><img src="img/capsule-rush.png?v=2" alt="Capsule Rush title art: capsule characters wearing hats" width="373" height="175" style="object-position:50% 0%"></div>
+        <div class="game-body">
+          <div class="tags"><span class="tag" data-i="g_platformer">3D platformer</span><span class="tag">Steam</span></div>
+          <h3>Capsule Rush</h3>
+          <div class="role" data-i="role_cr">Solo developer</div>
+          <p class="milestone"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z"/></svg><span data-i="cr_first">Making Capsule Rush was my first introduction to game development.</span></p>
+          <p data-i="cr_desc">A third-person 3D platformer. Jump between platforms through 10 levels that go from easy to very hard, dodge moving enemies, unlock hats for your capsule and chase the fastest time on the leaderboard.</p>
+          <dl class="specs">
+            <dt data-i="lbl_team">Team</dt><dd data-i="solo">Solo project</dd>
+            <dt data-i="lbl_released">Released</dt><dd data-i="cr_date">27 September 2022</dd>
+            <dt data-i="lbl_platform">Platform</dt><dd>Windows, macOS, Linux</dd>
+            <dt data-i="lbl_tools">Made with</dt><dd>Unity</dd>
+          </dl>
+          <a class="btn primary" href="https://store.steampowered.com/app/2138480/Capsule_Rush/" target="_blank" rel="noopener" data-i="steam_btn">View on Steam ↗</a>
+        </div>
+        <details class="ost no-music">
+          <summary><span class="eq"><b></b><b></b><b></b></span><span data-i="ost_notmine" style="white-space:nowrap">Music not by me</span></summary>
+          <ol class="tracks" data-game="cr"></ol>
+        </details>
+      </article>
+      <article class="game panel">
+        <div class="cover"><img src="img/fish-isle.jpg" alt="Fish Isle title art: the island seen from underwater" width="1400" height="490" style="object-position:25% 50%"></div>
+        <div class="game-body">
+          <div class="tags"><span class="tag" data-i="g_cozy">Cozy</span><span class="tag" data-i="g_fishing">Fishing</span></div>
+          <h3>Fish Isle</h3>
+          <div class="role" data-i="role_comp">Composer</div>
+          <p data-i="fish_desc">A cozy fishing game. Cast your line, explore the island and fill your bucket at your own pace.</p>
+          <dl class="specs">
+            <dt data-i="lbl_team">Team</dt><dd>Florence Svensson, Noah Sassner, Vicky Dagernäs, Wiktoria Zuzanna Kobos, Enes Gllogovci, Anton Stenum, Elmer Carlfalk, Axel Lindbom, Simon Nilsson</dd>
+            <dt data-i="lbl_tools">Made with</dt><dd>Unity, FMOD, FL Studio</dd>
+          </dl>
+          <p class="impl-lbl" data-i="impl_lbl">Audio implementation · FMOD</p>
+          <p data-i="fish_impl">The music is one dynamic FMOD event. Each area – village, forest, pond and beach – has its own music on its own track, all playing in sync. The game sets two parameters, Zones (where the player is) and TimeOfDay, and FMOD crossfades to the right area and switches between the day and night versions.</p>
+          <p class="impl-fig"><a href="img/fmod-fish-isle.png"><img src="img/fmod-fish-isle.png" alt="FMOD event for Fish Isle: four synced music tracks (Village, Forest, Pond, Beach) with TimeOfDay and Zones parameters" width="1785" height="597" loading="lazy"></a><span data-i="impl_zoom">Click to enlarge</span></p>
+          <a class="btn primary" href="https://noahsassner.itch.io/fish-isle" target="_blank" rel="noopener" data-i="play">Play on itch.io ↗</a>
+        </div>
+        <details class="ost">
+          <summary><span class="eq"><b></b><b></b><b></b></span><span data-i="ost">Soundtrack</span> <span class="t-meta" data-count="fish"></span><span class="chev">▾</span></summary>
+          <ol class="tracks" data-game="fish"></ol>
+        </details>
+      </article>
+      <article class="game panel">
+        <div class="cover"><img src="img/manhattan-flatline.jpg" alt="Manhattan Flatline title screen" width="315" height="170" style="object-position:50% 55%"></div>
+        <div class="game-body">
+          <div class="tags"><span class="tag" data-i="g_action">Action</span><span class="tag">Top-down shooter</span><span class="tag">Pixel art</span></div>
+          <h3>Manhattan Flatline</h3>
+          <div class="role" data-i="role_mf">Composer · Audio lead</div>
+          <p data-i="mf_desc">A fast-paced 2D top-down shooter. Dive through bullets and take down enemies in slow motion to get revenge on the mafia you used to work for.</p>
+          <dl class="specs">
+            <dt data-i="lbl_team">Team</dt><dd>KlaraThePotato, Simon Nilsson, Jonathan Fasth, hannesQuist, Maja H C</dd>
+            <dt data-i="lbl_released">Released</dt><dd data-i="mf_date">January 2024</dd>
+            <dt data-i="lbl_platform">Platform</dt><dd>Windows</dd>
+            <dt data-i="lbl_tools">Made with</dt><dd>Unity, FMOD, FL Studio</dd>
+          </dl>
+          <a class="btn primary" href="https://klarathepotato.itch.io/manhattanflatline" target="_blank" rel="noopener" data-i="play">Play on itch.io ↗</a>
+        </div>
+        <details class="ost">
+          <summary><span class="eq"><b></b><b></b><b></b></span><span data-i="ost">Soundtrack</span> <span class="t-meta" data-count="mf"></span><span class="chev">▾</span></summary>
+          <ol class="tracks" data-game="mf"></ol>
+        </details>
+      </article>
+      <article class="game panel">
+        <div class="cover"><img src="img/windward.jpg" alt="Windward title art: a letter over islands at sunset" width="1200" height="592" style="object-position:50% 10%"></div>
+        <div class="game-body">
+          <div class="tags"><span class="tag" data-i="g_explore">Exploration</span><span class="tag" data-i="g_story">Story</span></div>
+          <h3>Windward</h3>
+          <div class="role" data-i="role_comp">Composer</div>
+          <p data-i="ww_desc">An exploration and story game. An unreleased project that will not be published.</p>
+          <dl class="specs">
+            <dt data-i="lbl_tools">Made with</dt><dd>Unity, FMOD, FL Studio</dd>
+          </dl>
+        </div>
+        <details class="ost">
+          <summary><span class="eq"><b></b><b></b><b></b></span><span data-i="ost">Soundtrack</span> <span class="t-meta" data-count="ww"></span><span class="chev">▾</span></summary>
+          <ol class="tracks" data-game="ww"></ol>
+        </details>
+      </article>
+    </div>
+  </section>
+
+  <section id="music">
+    <div class="sec-head">
+      <h2><span data-i="music_title">Music</span><span class="h-count" id="cnt-music" aria-hidden="true"></span></h2>
+    </div>
+    <p class="feat-lbl" data-i="feat_lbl">Featured</p>
+    <ol class="tracks featured" data-game="featured"></ol>
+    <div class="music-ctrl">
+      <div class="chips" id="chips" role="group" aria-label="Genre"></div>
+      <div class="sort lang" id="sortwrap"><span data-i="sort_lbl" id="sortlbl">Sort</span>
+        <button type="button" class="sort-btn" id="sortbtn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="sortlbl sortcur">
+          <svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+          <span id="sortcur">By genre</span>
+          <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+        <ul class="lang-menu" id="sortmenu" role="listbox" aria-labelledby="sortlbl" hidden>
+          <li role="option" data-sort="genre" tabindex="-1"><span data-i="s_genre">By genre</span></li>
+          <li role="option" data-sort="title" tabindex="-1"><span data-i="s_title">Title A–Z</span></li>
+          <li role="option" data-sort="short" tabindex="-1"><span data-i="s_short">Length: shortest first</span></li>
+          <li role="option" data-sort="long" tabindex="-1"><span data-i="s_long">Length: longest first</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="player panel">
+      <ol class="tracks" data-game="all"></ol>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="sec-head">
+      <h2 data-i="skills_title">Technical skills</h2>
+    </div>
+    <div class="skills">
+      <article class="skill panel">
+        <div class="skill-top"><span class="mono logo"><img src="img/logo-fl.png" alt="FL Studio logo" width="160" height="160"></span><div><div class="cat" data-i="cat_daw">DAW</div><h3>FL Studio</h3></div></div>
+        <p data-i="sk_fl">Composing, arranging, sound design and mixing for game soundtracks.</p>
+      </article>
+      <article class="skill panel">
+        <div class="skill-top"><span class="mono logo"><img src="img/logo-wwise.png" alt="Wwise logo" width="160" height="160"></span><div><div class="cat" data-i="cat_mid">Audio middleware</div><h3>Wwise</h3></div></div>
+        <p data-i="sk_wwise">Interactive music and sound: states, switches, RTPCs and music transitions that follow gameplay.</p>
+      </article>
+      <article class="skill panel">
+        <div class="skill-top"><span class="mono logo"><img src="img/logo-fmod.png" alt="FMOD logo" width="160" height="160"></span><div><div class="cat" data-i="cat_mid">Audio middleware</div><h3>FMOD</h3></div></div>
+        <p data-i="sk_fmod">Event-based adaptive audio: parameters, layered music and real-time mixing in the engine.</p>
+      </article>
+      <article class="skill panel">
+        <div class="skill-top"><span class="mono logo"><img src="img/logo-unity.png" alt="Unity logo" width="160" height="160"></span><div><div class="cat" data-i="cat_engine">Game engine</div><h3>Unity</h3></div></div>
+        <p data-i="sk_unity">Building gameplay in C# and hooking up audio, from prototypes to released games.</p>
+      </article>
+      <article class="skill panel">
+        <div class="skill-top"><span class="mono logo"><img src="img/logo-unreal.png" alt="Unreal Engine logo" width="160" height="160"></span><div><div class="cat" data-i="cat_engine">Game engine</div><h3>Unreal Engine</h3></div></div>
+        <p data-i="sk_unreal">Blueprints, level setup and audio integration in Unreal projects.</p>
+      </article>
+      <article class="skill panel">
+        <div class="skill-top"><span class="mono code" aria-hidden="true">&lt;/&gt;</span><div><div class="cat" data-i="cat_code">Programming</div><h3>C# · JavaScript</h3></div></div>
+        <p data-i="sk_code">Gameplay and tools in C# for Unity, and interactive websites with JavaScript, HTML and CSS.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="thesis">
+    <div class="sec-head">
+      <h2 data-i="thesis_title">Thesis</h2>
+    </div>
+    <article class="thesis panel">
+      <div class="th-main">
+        <div class="kicker" data-i="thesis_kicker">Bachelor's thesis · 2026</div>
+        <h3>Desert Levels in Video Games: What significance does instrumentation and mode have for the listener's perception and associations of desert environments in video game music?</h3>
+        <p class="th-orig"><span data-i="th_orig">Original title (Swedish)</span>Ökennivåer i spel: Vilken betydelse har instrumentering respektive skala för lyssnarens upplevelse och associationer till ökenmiljöer i spelmusik?</p>
+        <p class="sum" data-i="th_sum">Game music often leans on cultural conventions to tell the player where they are. We composed four pieces that differ only in instrumentation and scale, played one piece to each of four listener groups, and surveyed how they experienced the setting, what they felt and which places it made them think of. The sample was small, so the study works as a pilot for a larger follow-up.</p>
+        <div class="stats">
+          <div><b>37</b><span data-i="st_pages">pages</span></div>
+        </div>
+        <a class="btn primary" href="https://urn.kb.se/resolve?urn=urn:nbn:se:his:diva-26988" target="_blank" rel="noopener" data-i="th_read">Read the thesis on DiVA ↗</a>
+      </div>
+      <aside class="th-side">
+        <dl class="specs">
+          <dt data-i="lbl_authors">Authors</dt><dd>Colin Sakho, Simon Nilsson</dd>
+          <dt data-i="lbl_degree">Degree</dt><dd data-i="th_degree">Bachelor's level, 15 HE credits</dd>
+          <dt data-i="lbl_uni">University</dt><dd data-i="th_uni">University of Skövde, School of Informatics</dd>
+          <dt data-i="lbl_prog">Programme</dt><dd data-i="th_prog">Game Development – Music</dd>
+          <dt data-i="lbl_sup">Supervisor</dt><dd>Jamie Fawcus</dd>
+          <dt data-i="lbl_exam">Examiner</dt><dd>Lars Bröndum</dd>
+        </dl>
+      </aside>
+    </article>
+  </section>
+
+  <section id="about">
+    <div class="two panel">
+      <div><h2 data-i="about_title">About</h2></div>
+      <div><p data-i="about_body">I'm a composer, sound engineer and game developer based in Vantaa, Finland. In 2026 I graduated from the University of Skövde with a Bachelor's degree in Game Development, specialising in music. I composed the music for Fish Isle and Windward, and on Manhattan Flatline I was both composer and in charge of the game's audio. My first game, Capsule Rush, I made entirely on my own and released on Steam. I'm curious, love learning new things and enjoy working with others. I speak Swedish and English fluently, and some Finnish. Right now I'm looking for my next opportunity in games and audio.</p></div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="cta-band">
+      <div>
+        <h2 data-i="contact_title">Contact</h2>
+        <p data-i="contact_body">I'm looking for roles as a composer or sound designer in games and film – and I'm always up for joining a team for a game jam. Get in touch.</p>
+      </div>
+      <div class="mail">
+        <a class="mail-addr" id="mailaddr" href="mailto:simon03n@gmail.com">simon03n@gmail.com</a>
+        <button class="copy-icon" id="copymail" type="button" aria-label="Copy email" title="Copy email"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg></button>
+        <a class="li-link" href="https://www.linkedin.com/in/simon-nilsson-35516537b/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <footer><span>© 2026 Simon Nilsson</span><span data-i="footer">Music & games</span></footer>
+</main>
+
+<div class="mini" id="mini" hidden>
+  <div class="mini-in">
+    <div class="mini-ctrl">
+      <button class="skip" id="prevbtn" type="button" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+      <button class="big-play" data-toggle type="button" aria-label="Play"><svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg></button>
+      <button class="skip" id="nextbtn" type="button" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+      <button class="skip rep" id="repbtn" type="button" aria-pressed="false" aria-label="Repeat track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v3l4-4-4-4v3H5v6h2zM17 17H7v-3l-4 4 4 4v-3h12v-6h-2z"/></svg><b class="rep-one" aria-hidden="true">1</b></button>
+    </div>
+    <div class="mini-txt"><strong data-now-title></strong><span data-now-sub></span>
+      <div class="prog"><span data-cur>0:00</span><input type="range" class="seek" id="seek-mini" data-seek min="0" max="1000" value="0" aria-label="Seek"><span data-dur>0:00</span></div>
+    </div>
+    <div class="vol">
+      <button class="skip" id="mutebtn" type="button" aria-label="Mute"><svg viewBox="0 0 24 24" aria-hidden="true"><path id="volicon" d=""/></svg></button>
+      <input type="range" class="seek vol-range" id="vol" min="0" max="100" value="80" aria-label="Volume">
+    </div>
+    <div class="mini-bars" id="minibars" aria-hidden="true"></div>
+  </div>
+</div>
+
+<script>
+const T={
+en:{nav_games:"Games",nav_music:"Music",nav_skills:"Skills",nav_about:"About",nav_contact:"Contact",hero_kicker:"Composer · Sound engineer · Game developer",
+hero_lead:"I write music for games and help build them. Below are the games I've worked on and a selection of my tracks.",
+cta_games:"See the games",cta_music:"Listen to music",hint:"Play any track and the background moves with the music.",games_title:"Games",
+games_lead:"Projects I've contributed to. Open the soundtrack under each game to hear its music.",g_cozy:"Cozy",g_fishing:"Fishing",g_action:"Action",
+fish_desc:"A cozy fishing game. You wash up on a mysterious island with no memory of who you are. Meet the few villagers still living there, learn to fish and explore the island around you.",impl_lbl:"Audio implementation · FMOD",fish_impl:"The music is one dynamic FMOD event. Each area – village, forest, pond and beach – has its own music on its own track, all playing in sync. The game sets two parameters, Zones (where the player is) and TimeOfDay, and FMOD crossfades to the right area and switches between the day and night versions.",impl_zoom:"Click to enlarge",mf_date:"January 2024",
+mf_desc:"A fast-paced 2D top-down shooter. Dive through bullets and take down enemies in slow motion to get revenge on the mafia you used to work for.",
+lbl_team:"Team",lbl_role:"My role",lbl_tools:"Made with",lbl_platform:"Platform",role_placeholder:"Add your role here",play:"Play on itch.io ↗",
+ost:"Soundtrack",tracks:"tracks",standalone:"Standalone",
+music_title:"Music",music_lead:"Soundtracks and standalone pieces. Press play on any track.",
+music_note:"Example tracks: these titles and loops are placeholders generated in the browser. Swap in your own tracks and audio files.",
+skills_title:"Technical skills",skills_lead:"The tools I use to write music, build adaptive audio and put it into games.",
+cat_daw:"DAW",cat_mid:"Audio middleware",cat_engine:"Game engine",used_on:"Used on",
+sk_fl:"Composing, arranging, sound design and mixing for game soundtracks.",
+sk_wwise:"Interactive music and sound: states, switches, RTPCs and music transitions that follow gameplay.",
+sk_fmod:"Event-based adaptive audio: parameters, layered music and real-time mixing in the engine.",
+sk_unity:"Building gameplay in C# and hooking up audio, from prototypes to released games.",
+sk_unreal:"Blueprints, level setup and audio integration in Unreal projects.",cat_code:"Programming",sk_code:"Gameplay and tools in C# for Unity, and interactive websites with JavaScript, HTML and CSS.",
+about_title:"About",about_body:"I'm a composer, sound engineer and game developer based in Vantaa, Finland. In 2026 I graduated from the University of Skövde with a Bachelor's degree in Game Development, specialising in music. I composed the music for Fish Isle and Windward, and on Manhattan Flatline I was both composer and in charge of the game's audio. My first game, Capsule Rush, I made entirely on my own and released on Steam. I'm curious, love learning new things and enjoy working with others. I speak Swedish and English fluently, and some Finnish. Right now I'm looking for my next opportunity in games and audio.",
+contact_title:"Contact",contact_body:"I'm looking for roles as a composer or sound designer in games and film – and I'm always up for joining a team for a game jam. Get in touch.",footer:"Music & games",play_lbl:"Play",pause_lbl:"Pause",
+nav_thesis:"Thesis",thesis_title:"Thesis",thesis_lead:"My bachelor's thesis in game music, written with Colin Sakho.",thesis_kicker:"Bachelor's thesis · 2026",th_orig:"Original title (Swedish)",
+th_sum:"Game music often leans on cultural conventions to tell the player where they are. We composed four pieces that differ only in instrumentation and scale, played one piece to each of four listener groups, and surveyed how they experienced the setting, what they felt and which places it made them think of. The sample was small, so the study works as a pilot for a larger follow-up.",
+st_pieces:"pieces composed",st_groups:"listener groups",st_pages:"pages",th_read:"Read the thesis on DiVA ↗",lbl_authors:"Authors",lbl_degree:"Degree",lbl_uni:"University",lbl_prog:"Programme",lbl_sup:"Supervisor",lbl_exam:"Examiner",
+th_degree:"Bachelor's level, 15 HE credits",th_uni:"University of Skövde, School of Informatics",th_prog:"Game Development – Music",
+all_genres:"All",sort_lbl:"Sort",s_genre:"By genre",s_title:"Title A–Z",s_bpm:"Tempo (BPM)",s_short:"Length: shortest first",s_long:"Length: longest first",
+gen_ambient:"Ambient",gen_acoustic:"Acoustic",gen_orchestral:"Orchestral",gen_lofi:"Lo-fi",gen_chiptune:"Chiptune",gen_synthwave:"Synthwave",gen_electronic:"Electronic",hs_games:"games",hs_tracks:"tracks",hs_genres:"genres",hs_thesis:"thesis",now_lbl:"Now playing",copy_lbl:"Copy email",copied_lbl:"Copied",prev_lbl:"Previous",next_lbl:"Next",
+cr_desc:"A third-person 3D platformer. Jump between platforms through 10 levels that go from easy to very hard, dodge moving enemies, unlock hats for your capsule and chase the fastest time on the leaderboard.",
+ww_desc:"An exploration and story game. An unreleased project that will not be published.",g_platformer:"3D platformer",g_unreleased:"Unreleased",lbl_released:"Released",solo:"Solo project",steam_btn:"View on Steam ↗",cr_date:"27 September 2022",cr_first:"Making Capsule Rush was my first introduction to game development.",gen_space:"Space",gen_asian:"Asian",gen_sad:"Sad",gen_desert:"Desert",gen_ost:"Game soundtrack",gen_funk:"Funk",gen_techno:"Techno",gen_other:"Other",vol_lbl:"Volume",mute_lbl:"Mute",unmute_lbl:"Unmute",more_lbl:"Show more",less_lbl:"Show less",info_show:"More info",info_hide:"Less info",g_explore:"Exploration",g_story:"Story",rep_on:"Repeat track: on",rep_off:"Repeat track: off",role_cr:"Solo developer",role_mf:"Composer · Audio lead",role_comp:"Composer",feat_lbl:"Featured",rel_lbl:"released",up_lbl:"upcoming",style_lbl:"Switch visual style",snd_on:"Interface sounds: on",snd_off:"Interface sounds: off",ost_none:"Soundtrack: music not made by me",ost_notmine:"Music not by me"},
+fi:{nav_games:"Pelit",nav_music:"Musiikki",nav_skills:"Taidot",nav_about:"Minusta",nav_contact:"Yhteystiedot",hero_kicker:"Säveltäjä · Ääniteknikko · Pelinkehittäjä",
+hero_lead:"Sävellän musiikkia peleihin ja olen mukana tekemässä niitä. Alta löydät pelit, joissa olen ollut mukana, ja valikoiman kappaleitani.",
+cta_games:"Katso pelit",cta_music:"Kuuntele musiikkia",hint:"Soita mikä tahansa kappale, niin tausta liikkuu musiikin tahdissa.",games_title:"Pelit",
+games_lead:"Projekteja, joissa olen ollut mukana. Avaa pelin soundtrack kuullaksesi sen musiikin.",g_cozy:"Rento",g_fishing:"Kalastus",g_action:"Toiminta",
+fish_desc:"Rento kalastuspeli. Huuhtoudut mystiselle saarelle muistamatta, kuka olet. Tapaa saarelle jääneet kyläläiset, opettele kalastamaan ja tutki ympäröivää saarta.",impl_lbl:"Äänen toteutus · FMOD",fish_impl:"Musiikki on yksi dynaaminen FMOD-tapahtuma. Jokaisella alueella – kylä, metsä, lampi ja ranta – on oma musiikkinsa omalla raidallaan, ja kaikki soivat tahdissa. Peli asettaa kaksi parametria, Zones (missä pelaaja on) ja TimeOfDay, ja FMOD ristihäivyttää oikeaan alueeseen ja vaihtaa päivä- ja yöversion välillä.",impl_zoom:"Suurenna klikkaamalla",mf_date:"tammikuu 2024",
+mf_desc:"Vauhdikas 2D-ylhäältä kuvattu ammuntapeli. Väistele luoteja ja kaada vihollisia hidastettuna kostaaksesi mafialle, jolle ennen työskentelit.",
+lbl_team:"Tiimi",lbl_role:"Roolini",lbl_tools:"Työkalut",lbl_platform:"Alusta",role_placeholder:"Lisää roolisi tähän",play:"Pelaa itch.iossa ↗",
+ost:"Soundtrack",tracks:"kappaletta",standalone:"Itsenäinen",
+music_title:"Musiikki",music_lead:"Pelien soundtrackeja ja itsenäisiä kappaleita. Paina play mistä tahansa kappaleesta.",
+music_note:"Esimerkkikappaleita: nimet ja luupit ovat selaimessa luotuja paikkamerkkejä. Vaihda tilalle omat kappaleesi ja äänitiedostosi.",
+skills_title:"Tekniset taidot",skills_lead:"Työkalut, joilla sävellän musiikkia, rakennan adaptiivista ääntä ja vien sen peleihin.",
+cat_daw:"DAW",cat_mid:"Äänimiddleware",cat_engine:"Pelimoottori",used_on:"Käytetty",
+sk_fl:"Säveltäminen, sovittaminen, äänisuunnittelu ja miksaus pelien soundtrackeihin.",
+sk_wwise:"Interaktiivinen musiikki ja ääni: tilat, kytkimet, RTPC:t ja musiikkisiirtymät pelin mukaan.",
+sk_fmod:"Tapahtumapohjainen adaptiivinen ääni: parametrit, kerroksellinen musiikki ja reaaliaikainen miksaus.",
+sk_unity:"Pelimekaniikan rakentaminen C#:lla ja äänen kytkeminen, prototyypeistä julkaistuihin peleihin.",
+sk_unreal:"Blueprintit, kenttien rakentaminen ja äänen integrointi Unreal-projekteissa.",cat_code:"Ohjelmointi",sk_code:"Pelimekaniikkaa ja työkaluja C#:lla Unityyn sekä interaktiivisia verkkosivuja JavaScriptillä, HTML:llä ja CSS:llä.",
+about_title:"Minusta",about_body:"Olen säveltäjä, ääniteknikko ja pelinkehittäjä Vantaalta. Valmistuin vuonna 2026 Skövden yliopistosta pelinkehityksen kandidaatiksi, erikoistumisalana musiikki. Sävelsin musiikin peleihin Fish Isle ja Windward, ja Manhattan Flatlinessa olin sekä säveltäjä että vastuussa pelin äänistä. Ensimmäisen pelini, Capsule Rushin, tein kokonaan itse ja julkaisin Steamissa. Olen utelias, opin mielelläni uutta ja työskentelen mielelläni muiden kanssa. Puhun sujuvasti ruotsia ja englantia sekä jonkin verran suomea. Etsin nyt seuraavaa mahdollisuutta pelien ja äänen parissa.",
+contact_title:"Yhteystiedot",contact_body:"Etsin säveltäjän tai äänisuunnittelijan tehtäviä peli- ja elokuva-alalta – ja lähden aina mielelläni mukaan game jam -tiimiin. Ota yhteyttä.",footer:"Musiikkia ja pelejä",play_lbl:"Toista",pause_lbl:"Tauko",
+nav_thesis:"Opinnäyte",thesis_title:"Opinnäytetyö",thesis_lead:"Pelimusiikin kandidaatintutkielmani, jonka kirjoitin yhdessä Colin Sakhon kanssa.",thesis_kicker:"Kandidaatintutkielma · 2026",th_orig:"Alkuperäinen nimi (ruotsiksi)",
+th_sum:"Pelimusiikki käyttää usein kulttuurisia konventioita kertoakseen pelaajalle, missä hän on. Sävelsimme neljä kappaletta, jotka eroavat toisistaan vain soitinnukseltaan ja asteikoltaan, soitimme yhden kappaleen kullekin neljästä kuuntelijaryhmästä ja kartoitimme kyselyllä, miten he kokivat ympäristön, mitä he tunsivat ja mihin paikkoihin musiikki heidät vei. Otos oli pieni, joten tutkimus toimii pilottina laajemmalle jatkotutkimukselle.",
+st_pieces:"sävellettyä kappaletta",st_groups:"kuuntelijaryhmää",st_pages:"sivua",th_read:"Lue tutkielma DiVAssa ↗",lbl_authors:"Tekijät",lbl_degree:"Taso",lbl_uni:"Yliopisto",lbl_prog:"Koulutusohjelma",lbl_sup:"Ohjaaja",lbl_exam:"Tarkastaja",
+th_degree:"Kandidaatintaso, 15 op",th_uni:"Skövden yliopisto, informatiikan laitos",th_prog:"Pelinkehitys – musiikki",
+all_genres:"Kaikki",sort_lbl:"Järjestä",s_genre:"Tyylilajin mukaan",s_title:"Nimi A–Ö",s_bpm:"Tempo (BPM)",s_short:"Pituus: lyhyin ensin",s_long:"Pituus: pisin ensin",
+gen_ambient:"Ambient",gen_acoustic:"Akustinen",gen_orchestral:"Orkestraali",gen_lofi:"Lo-fi",gen_chiptune:"Chiptune",gen_synthwave:"Synthwave",gen_electronic:"Elektroninen",hs_games:"peliä",hs_tracks:"kappaletta",hs_genres:"tyylilajia",hs_thesis:"opinnäyte",now_lbl:"Nyt soi",copy_lbl:"Kopioi sähköposti",copied_lbl:"Kopioitu",prev_lbl:"Edellinen",next_lbl:"Seuraava",
+cr_desc:"Kolmannen persoonan 3D-tasohyppely. Hypi tasolta toiselle kymmenen helposta erittäin vaikeaan kiristyvän kentän läpi, väistele liikkuvia vihollisia, avaa hattuja kapselillesi ja tavoittele nopeinta aikaa tulostaululla.",
+ww_desc:"Tutkimiseen ja tarinaan keskittyvä peli. Julkaisematon projekti, jota ei tulla julkaisemaan.",g_platformer:"3D-tasohyppely",g_unreleased:"Julkaisematon",lbl_released:"Julkaistu",solo:"Yksin tehty projekti",steam_btn:"Katso Steamissa ↗",cr_date:"27. syyskuuta 2022",cr_first:"Capsule Rushin tekeminen oli ensimmäinen kosketukseni pelinkehitykseen.",gen_space:"Avaruus",gen_asian:"Aasialainen",gen_sad:"Surullinen",gen_desert:"Aavikko",gen_ost:"Pelimusiikki",gen_funk:"Funk",gen_techno:"Techno",gen_other:"Muut",vol_lbl:"Äänenvoimakkuus",mute_lbl:"Mykistä",unmute_lbl:"Poista mykistys",more_lbl:"Näytä lisää",less_lbl:"Näytä vähemmän",info_show:"Lisätietoja",info_hide:"Vähemmän tietoja",g_explore:"Tutkiminen",g_story:"Tarina",rep_on:"Toista kappale uudelleen: päällä",rep_off:"Toista kappale uudelleen: pois",role_cr:"Soolokehittäjä",role_mf:"Säveltäjä · Äänivastaava",role_comp:"Säveltäjä",feat_lbl:"Nostot",rel_lbl:"julkaistu",up_lbl:"tulossa",style_lbl:"Vaihda tyyliä",snd_on:"Käyttöliittymän äänet: päällä",snd_off:"Käyttöliittymän äänet: pois",ost_none:"Soundtrack: musiikki ei ole minun tekemääni",ost_notmine:"Musiikki ei minun"},
+sv:{nav_games:"Spel",nav_music:"Musik",nav_skills:"Färdigheter",nav_about:"Om mig",nav_contact:"Kontakt",hero_kicker:"Kompositör · Ljudtekniker · Spelutvecklare",
+hero_lead:"Jag skriver musik till spel och är med och bygger dem. Här nedan finns spelen jag har jobbat med och ett urval av mina låtar.",
+cta_games:"Se spelen",cta_music:"Lyssna på musiken",hint:"Spela valfri låt så rör sig bakgrunden med musiken.",games_title:"Spel",
+games_lead:"Projekt jag har bidragit till. Öppna soundtracket under varje spel för att höra musiken.",g_cozy:"Mysigt",g_fishing:"Fiske",g_action:"Action",
+fish_desc:"Ett mysigt fiskespel. Du spolas upp på en mystisk ö utan minne av vem du är. Träffa de få bybor som finns kvar, lär dig fiska och utforska ön omkring dig.",impl_lbl:"Ljudimplementation · FMOD",fish_impl:"Musiken är ett enda dynamiskt FMOD-event. Varje område – byn, skogen, dammen och stranden – har sin egen musik på ett eget spår, och allt spelar i synk. Spelet sätter två parametrar, Zones (var spelaren är) och TimeOfDay, och FMOD tonar över till rätt område och växlar mellan dag- och nattversionen.",impl_zoom:"Klicka för att förstora",mf_date:"januari 2024",
+mf_desc:"Ett snabbt 2D-skjutspel sett uppifrån. Dyk genom kulregnet och slå ut fiender i slow motion för att hämnas på maffian du en gång jobbade för.",
+lbl_team:"Team",lbl_role:"Min roll",lbl_tools:"Gjort med",lbl_platform:"Plattform",role_placeholder:"Lägg till din roll här",play:"Spela på itch.io ↗",
+ost:"Soundtrack",tracks:"låtar",standalone:"Fristående",
+music_title:"Musik",music_lead:"Soundtracks och fristående stycken. Tryck play på valfri låt.",
+music_note:"Exempellåtar: titlarna och looparna är platshållare som skapas i webbläsaren. Byt ut dem mot dina egna låtar och ljudfiler.",
+skills_title:"Tekniska färdigheter",skills_lead:"Verktygen jag använder för att skriva musik, bygga adaptivt ljud och få in det i spel.",
+cat_daw:"DAW",cat_mid:"Ljudmiddleware",cat_engine:"Spelmotor",used_on:"Använt i",
+sk_fl:"Komponering, arrangering, ljuddesign och mixning för spelmusik.",
+sk_wwise:"Interaktiv musik och ljud: states, switches, RTPC:er och musikövergångar som följer spelet.",
+sk_fmod:"Händelsebaserat adaptivt ljud: parametrar, lagerbaserad musik och realtidsmixning i motorn.",
+sk_unity:"Bygger gameplay i C# och kopplar in ljud, från prototyper till släppta spel.",
+sk_unreal:"Blueprints, banbygge och ljudintegration i Unreal-projekt.",cat_code:"Programmering",sk_code:"Gameplay och verktyg i C# för Unity, och interaktiva webbsidor med JavaScript, HTML och CSS.",
+about_title:"Om mig",about_body:"Jag är kompositör, ljudtekniker och spelutvecklare, bosatt i Vanda i Finland. 2026 tog jag examen från Högskolan i Skövde med en kandidatexamen i dataspelsutveckling med inriktning mot musik. Jag har komponerat musiken till Fish Isle och Windward, och i Manhattan Flatline var jag både kompositör och ansvarig för spelets ljud. Mitt första spel, Capsule Rush, gjorde jag helt själv och släppte på Steam. Jag är nyfiken, gillar att lära mig nya saker och trivs med att samarbeta. Jag talar svenska och engelska flytande och lite finska. Nu söker jag min nästa möjlighet inom spel och ljud.",
+contact_title:"Kontakt",contact_body:"Jag söker roller som kompositör eller ljuddesigner inom spel och film – och är alltid sugen på att vara med i ett team på en game jam. Hör av dig.",footer:"Musik & spel",play_lbl:"Spela",pause_lbl:"Pausa",
+nav_thesis:"Examensarbete",thesis_title:"Examensarbete",thesis_lead:"Mitt kandidatarbete inom spelmusik, skrivet tillsammans med Colin Sakho.",thesis_kicker:"Kandidatuppsats · 2026",th_orig:"Originaltitel (svenska)",
+th_sum:"Spelmusik lutar sig ofta mot kulturella konventioner för att visa spelaren var hen befinner sig. Vi komponerade fyra stycken som bara skiljer sig i instrumentering och skala, lät fyra lyssnargrupper höra var sitt stycke och undersökte med en enkät hur de upplevde miljön, vad de kände och vilka platser musiken fick dem att tänka på. Urvalet var litet, så studien fungerar som en förstudie inför en större uppföljning.",
+st_pieces:"komponerade stycken",st_groups:"lyssnargrupper",st_pages:"sidor",th_read:"Läs uppsatsen i DiVA ↗",lbl_authors:"Författare",lbl_degree:"Nivå",lbl_uni:"Lärosäte",lbl_prog:"Program",lbl_sup:"Handledare",lbl_exam:"Examinator",
+th_degree:"Kandidatnivå, 15 hp",th_uni:"Högskolan i Skövde, Institutionen för informationsteknologi",th_prog:"Dataspelsutveckling – musik",
+all_genres:"Alla",sort_lbl:"Sortera",s_genre:"Efter genre",s_title:"Titel A–Ö",s_bpm:"Tempo (BPM)",s_short:"Längd: kortast först",s_long:"Längd: längst först",
+gen_ambient:"Ambient",gen_acoustic:"Akustiskt",gen_orchestral:"Orkestralt",gen_lofi:"Lo-fi",gen_chiptune:"Chiptune",gen_synthwave:"Synthwave",gen_electronic:"Elektroniskt",hs_games:"spel",hs_tracks:"låtar",hs_genres:"genrer",hs_thesis:"examensarbete",now_lbl:"Spelas nu",copy_lbl:"Kopiera e-post",copied_lbl:"Kopierad",prev_lbl:"Föregående",next_lbl:"Nästa",
+cr_desc:"Ett 3D-plattformsspel i tredje person. Hoppa mellan plattformar genom 10 banor som går från lätta till mycket svåra, undvik rörliga fiender, lås upp hattar till din kapsel och jaga snabbaste tiden på topplistan.",
+ww_desc:"Ett utforsknings- och berättelsespel. Ett osläppt projekt som inte kommer att ges ut.",g_platformer:"3D-plattformsspel",g_unreleased:"Osläppt",lbl_released:"Släppt",solo:"Soloprojekt",steam_btn:"Visa på Steam ↗",cr_date:"27 september 2022",cr_first:"Capsule Rush var min första introduktion till spelutveckling.",gen_space:"Rymd",gen_asian:"Asiatiskt",gen_sad:"Sorgligt",gen_desert:"Öken",gen_ost:"Spelmusik",gen_funk:"Funk",gen_techno:"Techno",gen_other:"Övrigt",vol_lbl:"Volym",mute_lbl:"Stäng av ljudet",unmute_lbl:"Slå på ljudet",more_lbl:"Visa fler",less_lbl:"Visa färre",info_show:"Mer info",info_hide:"Mindre info",g_explore:"Utforskning",g_story:"Berättelse",rep_on:"Upprepa låt: på",rep_off:"Upprepa låt: av",role_cr:"Soloutvecklare",role_mf:"Kompositör · Ljudansvarig",role_comp:"Kompositör",feat_lbl:"Utvalda",rel_lbl:"släppta",up_lbl:"kommande",style_lbl:"Byt stil",snd_on:"Gränssnittsljud: på",snd_off:"Gränssnittsljud: av",ost_none:"Soundtrack: musiken är inte gjord av mig",ost_notmine:"Musik inte av mig"},
+no:{nav_games:"Spill",nav_music:"Musikk",nav_skills:"Ferdigheter",nav_about:"Om meg",nav_contact:"Kontakt",hero_kicker:"Komponist · Lydtekniker · Spillutvikler",
+hero_lead:"Jeg lager musikk til spill og er med på å bygge dem. Under finner du spillene jeg har jobbet med og et utvalg av låtene mine.",
+cta_games:"Se spillene",cta_music:"Hør på musikken",hint:"Spill av en låt, så beveger bakgrunnen seg med musikken.",games_title:"Spill",
+games_lead:"Prosjekter jeg har bidratt til. Åpne lydsporet under hvert spill for å høre musikken.",g_cozy:"Koselig",g_fishing:"Fiske",g_action:"Action",
+fish_desc:"Et koselig fiskespill. Du skylles i land på en mystisk øy uten minne om hvem du er. Møt de få landsbyboerne som er igjen, lær deg å fiske og utforsk øya rundt deg.",impl_lbl:"Lydimplementering · FMOD",fish_impl:"Musikken er ett dynamisk FMOD-event. Hvert område – landsbyen, skogen, dammen og stranden – har sin egen musikk på sitt eget spor, og alt spiller synkront. Spillet setter to parametere, Zones (hvor spilleren er) og TimeOfDay, og FMOD toner over til riktig område og bytter mellom dag- og nattversjonen.",impl_zoom:"Klikk for å forstørre",mf_date:"januar 2024",
+mf_desc:"Et raskt 2D-skytespill sett ovenfra. Dykk gjennom kuleregnet og ta ut fiender i sakte film for å ta hevn på mafiaen du en gang jobbet for.",
+lbl_team:"Team",lbl_role:"Min rolle",lbl_tools:"Laget med",lbl_platform:"Plattform",role_placeholder:"Legg til rollen din her",play:"Spill på itch.io ↗",
+ost:"Lydspor",tracks:"låter",standalone:"Frittstående",
+music_title:"Musikk",music_lead:"Lydspor og frittstående stykker. Trykk play på hvilken som helst låt.",
+music_note:"Eksempellåter: titlene og loopene er plassholdere laget i nettleseren. Bytt dem ut med dine egne låter og lydfiler.",
+skills_title:"Tekniske ferdigheter",skills_lead:"Verktøyene jeg bruker til å lage musikk, bygge adaptiv lyd og få den inn i spill.",
+cat_daw:"DAW",cat_mid:"Lydmiddleware",cat_engine:"Spillmotor",used_on:"Brukt i",
+sk_fl:"Komponering, arrangering, lyddesign og miksing for spillmusikk.",
+sk_wwise:"Interaktiv musikk og lyd: states, switches, RTPC-er og musikkoverganger som følger spillet.",
+sk_fmod:"Hendelsesbasert adaptiv lyd: parametere, lagdelt musikk og sanntidsmiksing i motoren.",
+sk_unity:"Bygger gameplay i C# og kobler på lyd, fra prototyper til utgitte spill.",
+sk_unreal:"Blueprints, banebygging og lydintegrasjon i Unreal-prosjekter.",cat_code:"Programmering",sk_code:"Gameplay og verktøy i C# for Unity, og interaktive nettsider med JavaScript, HTML og CSS.",
+about_title:"Om meg",about_body:"Jeg er komponist, lydtekniker og spillutvikler, bosatt i Vantaa i Finland. I 2026 ble jeg uteksaminert fra Högskolan i Skövde med en bachelorgrad i spillutvikling med fordypning i musikk. Jeg komponerte musikken til Fish Isle og Windward, og i Manhattan Flatline var jeg både komponist og ansvarlig for spillets lyd. Mitt første spill, Capsule Rush, laget jeg helt alene og ga ut på Steam. Jeg er nysgjerrig, liker å lære nye ting og trives med å samarbeide. Jeg snakker svensk og engelsk flytende og litt finsk. Nå ser jeg etter min neste mulighet innen spill og lyd.",
+contact_title:"Kontakt",contact_body:"Jeg ser etter roller som komponist eller lyddesigner innen spill og film – og blir alltid gjerne med på et team til en game jam. Ta kontakt.",footer:"Musikk og spill",play_lbl:"Spill av",pause_lbl:"Pause",
+nav_thesis:"Oppgave",thesis_title:"Bacheloroppgave",thesis_lead:"Bacheloroppgaven min i spillmusikk, skrevet sammen med Colin Sakho.",thesis_kicker:"Bacheloroppgave · 2026",th_orig:"Originaltittel (svensk)",
+th_sum:"Spillmusikk bruker ofte kulturelle konvensjoner for å vise spilleren hvor de er. Vi komponerte fire stykker som bare skiller seg i instrumentering og skala, lot fire lyttergrupper høre hvert sitt stykke og undersøkte med et spørreskjema hvordan de opplevde miljøet, hva de følte og hvilke steder musikken fikk dem til å tenke på. Utvalget var lite, så studien fungerer som en forstudie til en større oppfølging.",
+st_pieces:"komponerte stykker",st_groups:"lyttergrupper",st_pages:"sider",th_read:"Les oppgaven i DiVA ↗",lbl_authors:"Forfattere",lbl_degree:"Nivå",lbl_uni:"Lærested",lbl_prog:"Studieprogram",lbl_sup:"Veileder",lbl_exam:"Sensor",
+th_degree:"Bachelornivå, 15 studiepoeng",th_uni:"Høgskolan i Skövde, Institutt for informatikk",th_prog:"Spillutvikling – musikk",
+all_genres:"Alle",sort_lbl:"Sorter",s_genre:"Etter sjanger",s_title:"Tittel A–Å",s_bpm:"Tempo (BPM)",s_short:"Lengde: kortest først",s_long:"Lengde: lengst først",
+gen_ambient:"Ambient",gen_acoustic:"Akustisk",gen_orchestral:"Orkestral",gen_lofi:"Lo-fi",gen_chiptune:"Chiptune",gen_synthwave:"Synthwave",gen_electronic:"Elektronisk",hs_games:"spill",hs_tracks:"låter",hs_genres:"sjangre",hs_thesis:"oppgave",now_lbl:"Spilles nå",copy_lbl:"Kopier e-post",copied_lbl:"Kopiert",prev_lbl:"Forrige",next_lbl:"Neste",
+cr_desc:"Et 3D-plattformspill i tredjeperson. Hopp mellom plattformer gjennom 10 baner som går fra lette til svært vanskelige, unngå fiender i bevegelse, lås opp hatter til kapselen din og jakt på raskeste tid på ledertavlen.",
+ww_desc:"Et utforsknings- og historiespill. Et uutgitt prosjekt som ikke kommer til å bli gitt ut.",g_platformer:"3D-plattformspill",g_unreleased:"Ikke utgitt",lbl_released:"Utgitt",solo:"Soloprosjekt",steam_btn:"Se på Steam ↗",cr_date:"27. september 2022",cr_first:"Capsule Rush var min første introduksjon til spillutvikling.",gen_space:"Verdensrom",gen_asian:"Asiatisk",gen_sad:"Trist",gen_desert:"Ørken",gen_ost:"Spillmusikk",gen_funk:"Funk",gen_techno:"Techno",gen_other:"Annet",vol_lbl:"Volum",mute_lbl:"Demp",unmute_lbl:"Slå på lyd",more_lbl:"Vis flere",less_lbl:"Vis færre",info_show:"Mer info",info_hide:"Mindre info",g_explore:"Utforskning",g_story:"Historie",style_lbl:"Bytt stil",rep_on:"Gjenta låt: på",rep_off:"Gjenta låt: av",role_cr:"Soloutvikler",role_mf:"Komponist · Lydansvarlig",role_comp:"Komponist",feat_lbl:"Utvalgte",rel_lbl:"utgitt",up_lbl:"kommende",snd_on:"Grensesnittlyder: på",snd_off:"Grensesnittlyder: av",ost_none:"Lydspor: musikken er ikke laget av meg",ost_notmine:"Musikk ikke av meg"},
+da:{nav_games:"Spil",nav_music:"Musik",nav_skills:"Kompetencer",nav_about:"Om mig",nav_contact:"Kontakt",hero_kicker:"Komponist · Lydtekniker · Spiludvikler",
+hero_lead:"Jeg skriver musik til spil og er med til at bygge dem. Herunder finder du de spil, jeg har arbejdet på, og et udvalg af mine numre.",
+cta_games:"Se spillene",cta_music:"Lyt til musikken",hint:"Afspil et nummer, så bevæger baggrunden sig med musikken.",games_title:"Spil",
+games_lead:"Projekter jeg har bidraget til. Åbn soundtracket under hvert spil for at høre musikken.",g_cozy:"Hyggeligt",g_fishing:"Fiskeri",g_action:"Action",
+fish_desc:"Et hyggeligt fiskespil. Du skyller i land på en mystisk ø uden at huske, hvem du er. Mød de få landsbyboere, der er tilbage, lær at fiske og udforsk øen omkring dig.",impl_lbl:"Lydimplementering · FMOD",fish_impl:"Musikken er ét dynamisk FMOD-event. Hvert område – landsbyen, skoven, dammen og stranden – har sin egen musik på sit eget spor, og det hele spiller synkront. Spillet sætter to parametre, Zones (hvor spilleren er) og TimeOfDay, og FMOD toner over til det rigtige område og skifter mellem dag- og natversionen.",impl_zoom:"Klik for at forstørre",mf_date:"januar 2024",
+mf_desc:"Et hurtigt 2D-skydespil set oppefra. Dyk gennem kugleregnen og nedlæg fjender i slowmotion for at tage hævn over mafiaen, du engang arbejdede for.",
+lbl_team:"Team",lbl_role:"Min rolle",lbl_tools:"Lavet med",lbl_platform:"Platform",role_placeholder:"Tilføj din rolle her",play:"Spil på itch.io ↗",
+ost:"Soundtrack",tracks:"numre",standalone:"Selvstændigt",
+music_title:"Musik",music_lead:"Soundtracks og selvstændige numre. Tryk play på et hvilket som helst nummer.",
+music_note:"Eksempelnumre: titlerne og loopsene er pladsholdere genereret i browseren. Udskift dem med dine egne numre og lydfiler.",
+skills_title:"Tekniske kompetencer",skills_lead:"De værktøjer, jeg bruger til at skrive musik, bygge adaptiv lyd og få den ind i spil.",
+cat_daw:"DAW",cat_mid:"Lydmiddleware",cat_engine:"Spilmotor",used_on:"Brugt i",
+sk_fl:"Komponering, arrangement, lyddesign og mixing til spilmusik.",
+sk_wwise:"Interaktiv musik og lyd: states, switches, RTPC'er og musikovergange, der følger spillet.",
+sk_fmod:"Hændelsesbaseret adaptiv lyd: parametre, lagdelt musik og realtidsmixing i motoren.",
+sk_unity:"Bygger gameplay i C# og kobler lyd på, fra prototyper til udgivne spil.",
+sk_unreal:"Blueprints, banebygning og lydintegration i Unreal-projekter.",cat_code:"Programmering",sk_code:"Gameplay og værktøjer i C# til Unity, og interaktive hjemmesider med JavaScript, HTML og CSS.",
+about_title:"Om mig",about_body:"Jeg er komponist, lydtekniker og spiludvikler og bor i Vantaa i Finland. I 2026 blev jeg færdig på Högskolan i Skövde med en bachelorgrad i spiludvikling med speciale i musik. Jeg har komponeret musikken til Fish Isle og Windward, og i Manhattan Flatline var jeg både komponist og ansvarlig for spillets lyd. Mit første spil, Capsule Rush, lavede jeg helt alene og udgav på Steam. Jeg er nysgerrig, kan lide at lære nyt og trives med at samarbejde. Jeg taler svensk og engelsk flydende og lidt finsk. Nu søger jeg min næste mulighed inden for spil og lyd.",
+contact_title:"Kontakt",contact_body:"Jeg søger roller som komponist eller lyddesigner inden for spil og film – og er altid klar til at være med på et hold til et game jam. Skriv til mig.",footer:"Musik & spil",play_lbl:"Afspil",pause_lbl:"Pause",
+nav_thesis:"Speciale",thesis_title:"Bachelorprojekt",thesis_lead:"Mit bachelorprojekt i spilmusik, skrevet sammen med Colin Sakho.",thesis_kicker:"Bachelorprojekt · 2026",th_orig:"Originaltitel (svensk)",
+th_sum:"Spilmusik læner sig ofte op ad kulturelle konventioner for at vise spilleren, hvor de er. Vi komponerede fire stykker, der kun adskiller sig i instrumentering og skala, lod fire lyttergrupper høre hvert sit stykke og undersøgte med et spørgeskema, hvordan de oplevede miljøet, hvad de følte, og hvilke steder musikken fik dem til at tænke på. Stikprøven var lille, så studiet fungerer som et pilotstudie til en større opfølgning.",
+st_pieces:"komponerede stykker",st_groups:"lyttergrupper",st_pages:"sider",th_read:"Læs projektet på DiVA ↗",lbl_authors:"Forfattere",lbl_degree:"Niveau",lbl_uni:"Uddannelsessted",lbl_prog:"Uddannelse",lbl_sup:"Vejleder",lbl_exam:"Eksaminator",
+th_degree:"Bachelorniveau, 15 ECTS",th_uni:"Högskolan i Skövde, Institut for informatik",th_prog:"Spiludvikling – musik",
+all_genres:"Alle",sort_lbl:"Sortér",s_genre:"Efter genre",s_title:"Titel A–Å",s_bpm:"Tempo (BPM)",s_short:"Længde: korteste først",s_long:"Længde: længste først",
+gen_ambient:"Ambient",gen_acoustic:"Akustisk",gen_orchestral:"Orkestral",gen_lofi:"Lo-fi",gen_chiptune:"Chiptune",gen_synthwave:"Synthwave",gen_electronic:"Elektronisk",hs_games:"spil",hs_tracks:"numre",hs_genres:"genrer",hs_thesis:"speciale",now_lbl:"Afspiller nu",copy_lbl:"Kopiér e-mail",copied_lbl:"Kopieret",prev_lbl:"Forrige",next_lbl:"Næste",
+cr_desc:"Et 3D-platformspil i tredjeperson. Hop mellem platforme gennem 10 baner, der går fra lette til meget svære, undgå fjender i bevægelse, lås hatte op til din kapsel og jagt den hurtigste tid på ranglisten.",
+ww_desc:"Et udforsknings- og historiespil. Et uudgivet projekt, der ikke bliver udgivet.",g_platformer:"3D-platformspil",g_unreleased:"Ikke udgivet",lbl_released:"Udgivet",solo:"Soloprojekt",steam_btn:"Se på Steam ↗",cr_date:"27. september 2022",cr_first:"Capsule Rush var min første introduktion til spiludvikling.",gen_space:"Rummet",gen_asian:"Asiatisk",gen_sad:"Trist",gen_desert:"Ørken",gen_ost:"Spilmusik",gen_funk:"Funk",gen_techno:"Techno",gen_other:"Andet",vol_lbl:"Lydstyrke",mute_lbl:"Slå lyden fra",unmute_lbl:"Slå lyden til",more_lbl:"Vis flere",less_lbl:"Vis færre",info_show:"Mere info",info_hide:"Mindre info",g_explore:"Udforskning",g_story:"Historie",style_lbl:"Skift stil",rep_on:"Gentag nummer: til",rep_off:"Gentag nummer: fra",role_cr:"Soloudvikler",role_mf:"Komponist · Lydansvarlig",role_comp:"Komponist",feat_lbl:"Udvalgte",rel_lbl:"udgivet",up_lbl:"kommende",snd_on:"Lyde i brugerfladen: til",snd_off:"Lyde i brugerfladen: fra",ost_none:"Soundtrack: musikken er ikke lavet af mig",ost_notmine:"Musik ikke af mig"}
+};
+
+/* ---------- tracks (placeholders) ---------- */
+const TRACKS=[
+ {name:"Astral Shores",genres:["ambient"],sub:["space"],game:"solo",gname:null,src:"audio/astral-shores.mp3",dur:118},
+ {name:"The Last Blade",genres:["asian"],game:"solo",gname:null,src:"audio/the-last-blade.mp3",dur:155},
+ {name:"Crimson Skies",genres:["orchestral"],game:"solo",gname:null,src:"audio/crimson-skies.mp3",dur:156},
+ {name:"Elven Majesty",genres:["orchestral"],game:"solo",gname:null,src:"audio/elven-majesty.mp3",dur:258},
+ {name:"Gilded Warden",genres:["orchestral"],game:"solo",gname:null,src:"audio/gilded-warden.mp3",dur:156},
+ {name:"Quiet Sorrow",genres:["sad"],game:"solo",gname:null,src:"audio/quiet-sorrow.mp3",dur:191},
+ {name:"Raven's Ascent",genres:["orchestral"],game:"solo",gname:null,src:"audio/ravens-ascent.mp3",dur:284},
+ {name:"Shrouded In Sand",genres:["desert"],game:"solo",gname:null,src:"audio/desert-mysterious.mp3",dur:97},
+ {name:"Skyforge Citadel",genres:["orchestral"],game:"solo",gname:null,src:"audio/skyforge-citadel.mp3",dur:232},
+ {name:"Space Hunter",genres:["space"],game:"solo",gname:null,src:"audio/space-hunter.mp3",dur:160},
+ {name:"Letters on the Wind",where:"Menu",genres:["ost"],game:"ww",gname:"Windward",src:"audio/ww-menu.mp3",dur:114},
+ {name:"Open Waters",where:"Ocean",genres:["ost"],game:"ww",gname:"Windward",src:"audio/ww-ocean.mp3",dur:96},
+ {name:"Island Breeze",where:"Island",genres:["ost"],game:"ww",gname:"Windward",src:"audio/ww-island-theme.mp3",dur:58},
+ {name:"Sigrid's Theme",genres:["ost"],game:"ww",gname:"Windward",src:"audio/ww-sigrids-theme.mp3",dur:77},
+ {name:"Ulrich's Theme",genres:["ost"],game:"ww",gname:"Windward",src:"audio/ww-ulrichs-theme.mp3",dur:144},
+ {name:"Homeward",where:"Credits",genres:["ost"],game:"ww",gname:"Windward",src:"audio/ww-credits.mp3",dur:140},
+ {name:"Drumstorm Rumble",where:"Menu",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/mf-drumstorm-rumble.mp3",dur:84},
+ {name:"Safehouse Briefing",where:"Tutorial",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/mf-tutorial.mp3",dur:48},
+ {name:"Retro Mirage",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/mf-retro-mirage.mp3",dur:51},
+ {name:"Sonic Fury",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/mf-sonic-fury.mp3",dur:51},
+ {name:"Retro Jumpstart",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/mf-retro-jumpstart.mp3",dur:51},
+ {name:"Neon Lobby",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/mf-b1f1.mp3",dur:44},
+ {name:"Velocity Vibes",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/mf-velocity-vibes.mp3",dur:51},
+ {name:"Shadow Surge",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/mf-shadow-surge.mp3",dur:51},
+ {name:"Third Strike",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/mf-level-3.mp3",dur:51},
+ {name:"Manhattan Mayhem",where:"Boss",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/mf-manhattan-mayhem.mp3",dur:81},
+ {name:"Beat Blaze",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/mf-beat-blaze.mp3",dur:51},
+ {name:"Velvet Getaway",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/funky.mp3",dur:48},
+ {name:"Techno Flatline",genres:["ost"],game:"mf",gname:"Manhattan Flatline",src:"audio/techno-flatline.mp3",dur:81},
+ {name:"Cast Off",where:"Menu",genres:["ost"],game:"fish",gname:"Fish Isle",src:"audio/fi-menu.mp3",dur:70},
+ {name:"Morning Market",where:"Village · Day",genres:["ost"],game:"fish",gname:"Fish Isle",src:"audio/fi-village-day.mp3",dur:128},
+ {name:"Lanterns by the Docks",where:"Village · Night",genres:["ost"],game:"fish",gname:"Fish Isle",src:"audio/fi-village-night.mp3",dur:128},
+ {name:"Sandy Shallows",where:"Beach · Day",genres:["ost"],game:"fish",gname:"Fish Isle",src:"audio/fi-beach-day.mp3",dur:70},
+ {name:"Moonlit Tide",where:"Beach · Night",genres:["ost"],game:"fish",gname:"Fish Isle",src:"audio/fi-beach-night.mp3",dur:70},
+ {name:"Whispering Pines",where:"Forest · Day",genres:["ost"],game:"fish",gname:"Fish Isle",src:"audio/fi-forest-day.mp3",dur:80},
+ {name:"Firefly Path",where:"Forest · Night",genres:["ost"],game:"fish",gname:"Fish Isle",src:"audio/fi-forest-night.mp3",dur:80},
+ {name:"Still Waters",where:"Pond · Day",genres:["ost"],game:"fish",gname:"Fish Isle",src:"audio/fi-pond-day.mp3",dur:92},
+ {name:"Frog Choir",where:"Pond · Night",genres:["ost"],game:"fish",gname:"Fish Isle",src:"audio/fi-pond-night.mp3",dur:93},
+ {name:"Reel It In!",where:"Minigame",genres:["ost"],game:"fish",gname:"Fish Isle",src:"audio/fi-minigame.mp3",dur:20}
+];
+let lang="en";
+const sub=t=>(t.gname||T[lang].standalone);
+const PLAY='<path d="M7 4v16l13-8z"/>',PAUSE='<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
+
+const GENRES=["orchestral","ambient","space","asian","desert","sad","acoustic","lofi","chiptune","synthwave","electronic","ost","other"];
+/* the tracks shown in the Featured row, in this order */
+const FEATURED=["Neon Lobby","Velvet Getaway","Crimson Skies","Astral Shores","Space Hunter"];
+let gFilter="all",sortBy="genre",listOrder=[],genreRank={};
+const gRank=g=>g in genreRank?genreRank[g]:99;
+const collapsed=new Set(),opened=new Set();
+const gLabel=k=>T[lang]["gen_"+k]||k;
+/* genres are filterable; sub-genres are shown but never become chips */
+const tagLine=t=>[...(t.gname?[t.gname]:[]),...(t.where?[t.where]:[]),...[...t.genres,...(t.sub||[])].filter(g=>!(t.gname&&g==="ost")).map(gLabel)].join(" · ");
+// rows show where a track plays in its game (Menu, Credits…) as a small label on the right
+const subLine=t=>[...(t.gname?[t.gname]:[]),...[...t.genres,...(t.sub||[])].filter(g=>!(t.gname&&g==="ost")).map(gLabel)].join(" · ");
+function makeRow(i,inGame){const t=TRACKS[i],sm=inGame?(t.where||""):subLine(t),pill=!inGame&&t.where; // narrow game panels show it under the title instead
+  const li=document.createElement("li");li.dataset.idx=i;
+  li.innerHTML=`<button class="t-btn" type="button"><svg viewBox="0 0 24 24">${PLAY}</svg></button><span class="t-name">${t.name}${sm?`<small>${sm}</small>`:""}</span>${pill?`<span class="t-where">${t.where}</span>`:""}<span class="t-meta">${fmt(t.dur)}</span>`;
+  li.addEventListener("click",()=>{ if(cur===i&&playing) stop(); else pick(i,true); });
+  return li;}
+function buildChips(){const box=document.getElementById("chips");box.innerHTML="";
+  // genres run from the most pieces to the fewest; ties keep the GENRES order
+  const gCount=g=>TRACKS.filter(t=>t.genres.includes(g)).length;
+  const used=GENRES.filter(g=>gCount(g)>0).sort((a,b)=>gCount(b)-gCount(a)||GENRES.indexOf(a)-GENRES.indexOf(b));
+  genreRank={};used.forEach((g,i)=>genreRank[g]=i);
+  if(gFilter!=="all"&&!used.includes(gFilter))gFilter="all";
+  ["all",...used].forEach(g=>{const b=document.createElement("button");b.type="button";b.className="chip";b.setAttribute("aria-pressed",g===gFilter);
+    const n=g==="all"?TRACKS.length:TRACKS.filter(t=>t.genres.includes(g)).length;
+    b.innerHTML=`${g==="all"?T[lang].all_genres:gLabel(g)}<b>${n}</b>`;
+    b.addEventListener("click",()=>{gFilter=g;buildLists()});box.appendChild(b)});}
+function buildLists(){
+  buildChips();
+  document.querySelectorAll("ol.tracks").forEach(ol=>{
+    const g=ol.dataset.game; ol.innerHTML="";
+    if(g==="featured"){FEATURED.forEach(n=>{const i=TRACKS.findIndex(t=>t.name===n);if(i>=0)ol.appendChild(makeRow(i))});return;}
+    if(g!=="all"){TRACKS.forEach((t,i)=>{if(t.game===g)ol.appendChild(makeRow(i,true))});return;}
+    const cmp={genre:(a,b)=>gRank(TRACKS[a].genres[0])-gRank(TRACKS[b].genres[0])||TRACKS[a].name.localeCompare(TRACKS[b].name),
+      title:(a,b)=>TRACKS[a].name.localeCompare(TRACKS[b].name),short:(a,b)=>TRACKS[a].dur-TRACKS[b].dur||TRACKS[a].name.localeCompare(TRACKS[b].name),
+      long:(a,b)=>TRACKS[b].dur-TRACKS[a].dur||TRACKS[a].name.localeCompare(TRACKS[b].name)}[sortBy]||((a,b)=>a-b);
+    // game soundtracks are kept together per game, under a thin divider with the game's title
+    const groupGames=gFilter==="ost"||(gFilter==="all"&&sortBy==="genre");
+    const idx=TRACKS.map((t,i)=>i).filter(i=>gFilter==="all"||TRACKS[i].genres.includes(gFilter)).sort((a,b)=>{
+      if(groupGames){const A=TRACKS[a],B=TRACKS[b];
+        if(gFilter==="all"){const g=gRank(A.genres[0])-gRank(B.genres[0]);if(g)return g}
+        if(A.gname||B.gname){const go=t=>{const i=["cr","mf","ww","fish"].indexOf(t.game);return i<0?99:i},gm=go(A)-go(B);if(gm)return gm;if(sortBy==="genre")return a-b}}
+      return cmp(a,b)});
+    listOrder=idx;
+    let last=null,lastGame=null,hideG=false,hideS=false;
+    const header=(cls,key,html)=>{const h=document.createElement("li");h.className=cls;h.tabIndex=0;h.setAttribute("role","button");
+      // genre groups start closed; game groups inside them start open
+      const set=key.startsWith("g:")?opened:collapsed,open=key.startsWith("g:")?opened.has(key):!collapsed.has(key);h.setAttribute("aria-expanded",open);const CH='<i class="gchev" aria-hidden="true">▾</i>';h.innerHTML=cls==="sub"?html.replace(/<\/span>$/,CH+"</span>"):html+CH;
+      const toggle=()=>{set.has(key)?set.delete(key):set.add(key);buildLists();const n=document.querySelector(`ol.tracks li[data-key="${CSS.escape(key)}"]`);if(n)n.focus()};
+      h.dataset.key=key;h.addEventListener("click",toggle);h.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle()}});
+      ol.appendChild(h);return !open};
+    idx.forEach(i=>{const t=TRACKS[i],gen=t.genres[0];
+      if(sortBy==="genre"&&gFilter==="all"&&gen!==last){last=gen;lastGame=null;hideS=false;
+        hideG=header("grp","g:"+gen,`${gLabel(gen)}<span>${TRACKS.filter(x=>x.genres[0]===gen).length}</span>`)}
+      if(groupGames&&t.gname&&t.gname!==lastGame){lastGame=t.gname;
+        if(!hideG)hideS=header("sub","s:"+(last||gFilter)+"|"+t.gname,`<span class="sub-chip">${t.gname}</span>`)}
+      else if(!t.gname)hideS=false;
+      if(!hideG&&!hideS)ol.appendChild(makeRow(i))});
+  });
+  syncSort();
+  document.getElementById("cnt-games").textContent=document.querySelectorAll(".game").length;
+  document.getElementById("cnt-music").textContent=TRACKS.length;
+  document.querySelectorAll("details.ost").forEach(d=>{const g=d.querySelector("ol.tracks").dataset.game,n=TRACKS.filter(t=>t.game===g).length;
+    d.hidden=false;d.style.visibility=(n||d.classList.contains("no-music"))?"":"hidden";const c=d.querySelector("[data-count]");if(c){c.textContent=n;c.title=`${n} ${T[lang].tracks}`}});
+  syncUI();
+}
+
+/* ---------- i18n ---------- */
+function setLang(l){
+  if(!T[l]) l="en"; lang=l;
+  document.documentElement.lang=l==="no"?"nb":l;
+  document.querySelectorAll("[data-i]").forEach(el=>{const v=T[l][el.dataset.i]; if(v) el.textContent=v;});
+  document.getElementById("prevbtn").setAttribute("aria-label",T[l].prev_lbl);
+  applyVol();updSnd();fitTags();updRep();
+  document.querySelectorAll("details.no-music summary").forEach(s=>s.title=T[l].ost_none);
+  {const sb=document.getElementById("stylebtn");sb.setAttribute("aria-label",T[l].style_lbl);sb.title=T[l].style_lbl;}
+  {const cb=document.getElementById("copymail");cb.setAttribute("aria-label",T[l].copy_lbl);cb.title=T[l].copy_lbl;}
+  document.getElementById("nextbtn").setAttribute("aria-label",T[l].next_lbl);
+  document.getElementById("langflag").innerHTML=FLAGS[l];
+  document.getElementById("langcode").textContent=LANGS.find(x=>x[0]===l)[2];
+  lmenu.querySelectorAll("li").forEach(li=>li.setAttribute("aria-selected",li.dataset.lang===l));
+  buildLists();
+  try{localStorage.setItem("lang",l)}catch(e){}
+}
+const LANGS=[["en","English","EN"],["fi","Suomi","FI"],["sv","Svenska","SV"],["no","Norsk","NO"],["da","Dansk","DA"]];
+const nordic=(bg,c,inner)=>`<svg viewBox="0 0 22 16" aria-hidden="true"><rect width="22" height="16" fill="${bg}"/><rect x="6" width="4" height="16" fill="${c}"/><rect y="6" width="22" height="4" fill="${c}"/>${inner?`<rect x="7" width="2" height="16" fill="${inner}"/><rect y="7" width="22" height="2" fill="${inner}"/>`:""}</svg>`;
+const FLAGS={fi:nordic("#ffffff","#003580"),sv:nordic("#006aa7","#fecc00"),no:nordic("#ba0c2f","#ffffff","#00205b"),da:nordic("#c8102e","#ffffff"),
+  en:`<svg viewBox="0 0 60 30" preserveAspectRatio="none" aria-hidden="true"><rect width="60" height="30" fill="#012169"/><path d="M0,0 60,30M60,0 0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 60,30M60,0 0,30" stroke="#c8102e" stroke-width="2"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#c8102e" stroke-width="6"/></svg>`};
+const lbtn=document.getElementById("langbtn"),lmenu=document.getElementById("langmenu");
+LANGS.forEach(([c,n,code])=>{const li=document.createElement("li");li.setAttribute("role","option");li.dataset.lang=c;li.tabIndex=-1;li.lang=c==="no"?"nb":c;
+  li.innerHTML=`<span class="flag">${FLAGS[c]}</span>${n}<small>${code}</small>`;
+  li.addEventListener("click",()=>{setLang(c);closeMenu();lbtn.focus()});lmenu.appendChild(li)});
+function openMenu(){lmenu.hidden=false;lbtn.setAttribute("aria-expanded","true");(lmenu.querySelector('[aria-selected="true"]')||lmenu.firstElementChild).focus()}
+function closeMenu(){lmenu.hidden=true;lbtn.setAttribute("aria-expanded","false")}
+lbtn.addEventListener("click",()=>lmenu.hidden?openMenu():closeMenu());
+lbtn.addEventListener("keydown",e=>{if(e.key==="ArrowDown"){e.preventDefault();openMenu()}});
+lmenu.addEventListener("keydown",e=>{const items=[...lmenu.children],i=items.indexOf(document.activeElement);
+  if(e.key==="ArrowDown"){e.preventDefault();items[(i+1)%items.length].focus()}
+  else if(e.key==="ArrowUp"){e.preventDefault();items[(i-1+items.length)%items.length].focus()}
+  else if(e.key==="Enter"||e.key===" "){e.preventDefault();document.activeElement.click()}
+  else if(e.key==="Escape"){closeMenu();lbtn.focus()}
+  else if(e.key==="Tab"){closeMenu()}});
+document.addEventListener("click",e=>{if(!document.getElementById("lang").contains(e.target))closeMenu()});
+
+/* ---------- audio engine (real tracks) ---------- */
+let ctx=null,analyser=null,freq=null,playing=false,cur=0,everPlayed=false;
+const audio=new Audio();audio.preload="metadata";
+audio.addEventListener("ended",()=>{if(repeatOne){audio.currentTime=0;const p=audio.play();if(p&&p.catch)p.catch(()=>{})}else skip(1)});
+audio.addEventListener("timeupdate",updateProgress);
+audio.addEventListener("loadedmetadata",updateProgress);
+function fmt(s){s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
+function ensureGraph(){if(ctx)return;
+  try{ctx=new (window.AudioContext||window.webkitAudioContext)();const node=ctx.createMediaElementSource(audio);
+    analyser=ctx.createAnalyser();analyser.fftSize=256;analyser.smoothingTimeConstant=.7;freq=new Uint8Array(analyser.frequencyBinCount);
+    node.connect(analyser);gainNode=ctx.createGain();analyser.connect(gainNode);gainNode.connect(ctx.destination);audio.volume=1;applyVol();}catch(e){analyser=null}}
+function load(i){cur=i;const s=new URL(TRACKS[i].src,location.href).href;if(audio.src!==s){audio.src=s}}
+function start(){ensureGraph();if(ctx&&ctx.state!=="running")ctx.resume();load(cur);
+  playing=true;everPlayed=true;syncUI();kick();
+  const p=audio.play();if(p&&p.catch)p.catch(()=>{playing=false;syncUI()});}
+function stop(){audio.pause();playing=false;syncUI()}
+function pick(i,play){load(i);if(play){audio.currentTime=0;start()}else syncUI()}
+function updateProgress(){const t=TRACKS[cur];if(!t)return;const d=audio.src&&audio.duration?audio.duration:t.dur,c=audio.src?audio.currentTime:0;
+  document.querySelectorAll("[data-seek]").forEach(r=>{if(!r.dataset.drag)r.value=d?Math.round(c/d*1000):0;r.style.setProperty("--p",(d?c/d*100:0)+"%")});
+  document.querySelectorAll("[data-cur]").forEach(e=>e.textContent=fmt(c));
+  document.querySelectorAll("[data-dur]").forEach(e=>e.textContent=fmt(d));}
+document.querySelectorAll("[data-seek]").forEach(r=>{
+  r.addEventListener("pointerdown",()=>r.dataset.drag="1");r.addEventListener("pointerup",()=>delete r.dataset.drag);r.addEventListener("change",()=>delete r.dataset.drag);
+  r.addEventListener("input",()=>{load(cur);const d=audio.duration||TRACKS[cur].dur;audio.currentTime=r.value/1000*d;r.style.setProperty("--p",r.value/10+"%");
+    document.querySelectorAll("[data-cur]").forEach(e=>e.textContent=fmt(audio.currentTime))});});
+function syncUI(){
+  const t=TRACKS[cur];
+  document.querySelectorAll("[data-now-title]").forEach(e=>e.textContent=t.name);
+  document.querySelectorAll("[data-now-sub]").forEach(e=>e.textContent=tagLine(t));
+  updateProgress();
+  document.querySelectorAll("ol.tracks li[data-idx]").forEach(li=>{
+    const on=+li.dataset.idx===cur; li.classList.toggle("on",on);
+    li.querySelector(".t-btn svg").innerHTML=(on&&playing)?PAUSE:PLAY;
+    li.querySelector(".t-btn").setAttribute("aria-label",(on&&playing?T[lang].pause_lbl:T[lang].play_lbl)+" "+TRACKS[li.dataset.idx].name);
+  });
+  document.querySelectorAll("[data-toggle]").forEach(b=>{b.querySelector("svg").innerHTML=playing?PAUSE:PLAY;b.setAttribute("aria-label",playing?T[lang].pause_lbl:T[lang].play_lbl)});
+  document.getElementById("mini").hidden=!everPlayed;
+}
+document.querySelectorAll("[data-toggle]").forEach(b=>b.addEventListener("click",()=>playing?stop():start()));
+/* sort menu */
+const SORTKEY={genre:"s_genre",title:"s_title",short:"s_short",long:"s_long"};
+function syncSort(){document.getElementById("sortcur").textContent=T[lang][SORTKEY[sortBy]];document.querySelectorAll("#sortmenu li").forEach(li=>li.setAttribute("aria-selected",li.dataset.sort===sortBy))}
+const sortbtn=document.getElementById("sortbtn"),sortmenu=document.getElementById("sortmenu");
+const closeSort=()=>{sortmenu.hidden=true;sortbtn.setAttribute("aria-expanded","false")};
+sortbtn.addEventListener("click",()=>{const o=sortmenu.hidden;sortmenu.hidden=!o;sortbtn.setAttribute("aria-expanded",o);if(o)(sortmenu.querySelector('[aria-selected="true"]')||sortmenu.firstElementChild).focus()});
+sortmenu.querySelectorAll("li").forEach(li=>li.addEventListener("click",()=>{sortBy=li.dataset.sort;closeSort();buildLists();sortbtn.focus()}));
+sortmenu.addEventListener("keydown",e=>{const items=[...sortmenu.children],i=items.indexOf(document.activeElement);
+  if(e.key==="ArrowDown"){e.preventDefault();items[(i+1)%items.length].focus()}else if(e.key==="ArrowUp"){e.preventDefault();items[(i-1+items.length)%items.length].focus()}
+  else if(e.key==="Enter"||e.key===" "){e.preventDefault();document.activeElement.click()}else if(e.key==="Escape"){closeSort();sortbtn.focus()}else if(e.key==="Tab")closeSort()});
+document.addEventListener("click",e=>{if(!document.getElementById("sortwrap").contains(e.target))closeSort()});
+/* close an open game soundtrack when clicking elsewhere, or when another one opens */
+document.addEventListener("click",e=>{document.querySelectorAll("details.ost[open]").forEach(d=>{if(!d.contains(e.target))d.open=false})});
+document.querySelectorAll("details.no-music summary").forEach(s=>s.addEventListener("click",e=>e.preventDefault()));
+document.querySelectorAll("details.ost").forEach(d=>d.addEventListener("keydown",e=>{if(e.key==="Escape"){d.open=false;d.querySelector("summary").focus()}}));
+/* previous / next follow the order shown in the Music list */
+function playOrder(){return listOrder.includes(cur)?listOrder:TRACKS.map((t,i)=>i)}
+function skip(dir){const o=playOrder(),p=o.indexOf(cur);pick(o[(p+dir+o.length)%o.length],true)}
+document.getElementById("prevbtn").addEventListener("click",()=>skip(-1));
+document.getElementById("nextbtn").addEventListener("click",()=>skip(1));
+/* repeat: when on, the current track starts over instead of moving to the next */
+let repeatOne=false;try{repeatOne=localStorage.getItem("repeat")==="1"}catch(e){}
+function updRep(){const b=document.getElementById("repbtn"),L=T[lang]||T.en,s=repeatOne?L.rep_on:L.rep_off;b.setAttribute("aria-pressed",repeatOne);b.setAttribute("aria-label",s);b.title=s}
+document.getElementById("repbtn").addEventListener("click",()=>{repeatOne=!repeatOne;try{localStorage.setItem("repeat",repeatOne?"1":"0")}catch(e){}updRep()});
+/* volume: a gain node after the analyser, so the background still reacts at low volume */
+let vol=.8,muted=false,gainNode=null;
+try{const v=parseFloat(localStorage.getItem("vol"));if(!isNaN(v))vol=Math.min(1,Math.max(0,v))}catch(e){}
+const VOL_HI="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.47 4.47 0 0 0 2.5-4zM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06A9 9 0 0 0 14 3.23z",
+  VOL_LO="M5 9v6h4l5 5V4L9 9H5zm11.5 3A4.5 4.5 0 0 0 14 8v8a4.47 4.47 0 0 0 2.5-4z",
+  VOL_OFF="M16.5 12A4.5 4.5 0 0 0 14 8v2.18l2.45 2.45c.03-.2.05-.41.05-.63zM19 12c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.8 8.8 0 0 0 21 12a9 9 0 0 0-7-8.77v2.06A7 7 0 0 1 19 12zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a9 9 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z";
+function applyVol(){const v=muted?0:vol;
+  if(gainNode)gainNode.gain.value=v;else audio.volume=v;
+  const r=document.getElementById("vol");r.value=Math.round(vol*100);r.style.setProperty("--p",(muted?0:vol*100)+"%");
+  document.getElementById("volicon").setAttribute("d",v===0?VOL_OFF:v<.4?VOL_LO:VOL_HI);
+  const L=T[lang]||T.en,b=document.getElementById("mutebtn");b.setAttribute("aria-label",v===0?L.unmute_lbl:L.mute_lbl);b.title=b.getAttribute("aria-label");
+  r.setAttribute("aria-label",L.vol_lbl);}
+document.getElementById("vol").addEventListener("input",e=>{vol=e.target.value/100;muted=vol===0;applyVol();try{localStorage.setItem("vol",vol)}catch(err){}});
+document.getElementById("mutebtn").addEventListener("click",()=>{if(vol===0){vol=.5;muted=false}else muted=!muted;applyVol()});
+/* copy email */
+const copyBtn=document.getElementById("copymail");let copyTimer=null;
+copyBtn.addEventListener("click",()=>{
+  const addr=document.getElementById("mailaddr");
+  const ICON=copyBtn.innerHTML;
+  const done=()=>{copyBtn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>';copyBtn.setAttribute("aria-label",T[lang].copied_lbl);copyBtn.title=T[lang].copied_lbl;
+    clearTimeout(copyTimer);copyTimer=setTimeout(()=>{copyBtn.innerHTML=ICON;copyBtn.setAttribute("aria-label",T[lang].copy_lbl);copyBtn.title=T[lang].copy_lbl},1800)};
+  const selectIt=()=>{const r=document.createRange();r.selectNodeContents(addr);const s=getSelection();s.removeAllRanges();s.addRange(r)};
+  try{navigator.clipboard.writeText(addr.textContent).then(done,selectIt)}catch(e){selectIt()}
+});
+
+/* ---------- audio-reactive aurora background ---------- */
+const cv=document.getElementById("aurora"),cx=cv.getContext("2d");
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const miniBars=document.getElementById("minibars");for(let i=0;i<24;i++)miniBars.appendChild(document.createElement("i"));
+let bassAvg=0,bands={bass:0,mid:0,high:0},beat=0,sparks=[],running=false,W=0,H=0,tLast=0,phase=0;
+function tok(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+let colors={};function readColors(){colors={blue:tok("--blue"),purple:tok("--purple"),alpha:parseFloat(tok("--aur-alpha"))||.6}}
+readColors();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{readColors();if(!running)draw(performance.now())});
+new MutationObserver(()=>{readColors();if(!running)draw(performance.now())}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+function resize(){const d=Math.min(devicePixelRatio||1,1.5);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0)}
+addEventListener("resize",()=>{resize();if(!running)draw(performance.now())});resize();
+
+function avg(a,b){let s=0;for(let i=a;i<b;i++)s+=freq[i];return s/(b-a)/255}
+function analyse(){
+  let tb=0,tm=0,th=0;
+  if(analyser&&playing){analyser.getByteFrequencyData(freq);tb=avg(1,6);tm=avg(6,30);th=avg(30,80)}
+  bands.bass+= (tb-bands.bass)*.06; bands.mid+=(tm-bands.mid)*.06; bands.high+=(th-bands.high)*.06;
+  // soft pulse on strong bass hits in the actual track
+  if(analyser&&playing){
+    if(tb>bassAvg*1.25&&tb>.35&&beat<.25){beat=Math.min(.8,beat+.45);}
+    bassAvg=bassAvg*.95+tb*.05;
+  }
+  beat*=.94;
+  // mini player bars
+  const bars=miniBars.children;
+  for(let i=0;i<bars.length;i++) bars[i].style.height=(analyser&&playing?Math.max(8,freq[i*2+1]/255*100):8)+"%";
+}
+function draw(now){
+  const dt=Math.min(50,now-(tLast||now));tLast=now;
+  analyse();
+  const st=document.documentElement.dataset.style;
+  drawAuroraSky(dt);
+}
+/* aurora background: real northern-lights curtains. Two soft curtains of vertical light hang along slowly drifting curves near the top;
+   the bass makes them reach further down, the melody (mids) makes them brighter, beats give a gentle flare and the highs make the stars twinkle.
+   Motion is kept slow on purpose. In light mode the same curtains are drawn faintly. */
+const auroraStars=Array.from({length:110},()=>({x:Math.random(),y:Math.random()*.75,r:Math.random()*1.1+.3,ph:Math.random()*6.28}));
+let auroraSprites=null,auroraKey="";
+// one vertical strip of light; several colour stops give each curtain a shift in hue from top to bottom, like a real aurora
+function auroraSprite(stops){const g=document.createElement("canvas");g.width=1;g.height=256;const x=g.getContext("2d"),gr=x.createLinearGradient(0,0,0,256);
+  for(const[pos,c,a]of stops)gr.addColorStop(pos,hexA(c,a));x.fillStyle=gr;x.fillRect(0,0,1,256);return g}
+function drawAuroraSky(dt){
+  const energy=bands.bass*1.2+bands.mid+bands.high*.6,still=reduce&&!playing;
+  phase+=dt*(still?0:(.00008+energy*.00006));
+  const key=colors.blue+colors.purple;if(key!==auroraKey){auroraKey=key;auroraSprites=[auroraSprite([[0,colors.purple,0],[.45,colors.purple,.3],[.72,colors.blue,.55],[.9,"#3fd6c4",.6],[1,"#3fd6c4",0]]),   // violet → blue → teal
+    auroraSprite([[0,"#e07bff",0],[.5,"#e07bff",.28],[.8,colors.blue,.5],[.93,"#7aa8ff",.45],[1,"#7aa8ff",0]])]}   /* second curtain: pink → indigo → soft blue */
+  cx.clearRect(0,0,W,H);
+  const dark=colors.alpha>.7,A=dark?.65:.35;
+  // stars (dark mode only)
+  if(dark){for(const st of auroraStars){const tw=.35+.65*Math.abs(Math.sin(st.ph+phase*4));
+    cx.fillStyle=`rgba(255,255,255,${((.18+bands.high*.4)*tw).toFixed(3)})`;cx.fillRect(st.x*W,st.y*H,st.r,st.r)}}
+  // the curtains are drawn at a quarter of the resolution and scaled up, which blurs them into soft light
+  const ow=Math.ceil(W/4),oh=Math.ceil(H/4);if(!drawAuroraSky.oc){drawAuroraSky.oc=document.createElement("canvas")}
+  const oc=drawAuroraSky.oc;if(oc.width!==ow||oc.height!==oh){oc.width=ow;oc.height=oh}const ox=oc.getContext("2d");ox.clearRect(0,0,ow,oh);
+  ox.globalCompositeOperation="lighter";
+  [[0,.11,1],[1,.21,.7]].forEach(([si,y0,amp])=>{
+    const spr=auroraSprites[si],off=si*2.3;
+    for(let x=0;x<ow;x++){const p=x/ow;
+      const base=oh*(y0+Math.sin(p*5.2+phase*1.1+off)*.035+Math.sin(p*13-phase*1.7+off)*.012);       // the curtain's wavy lower edge
+      const len=oh*(.22+.1*Math.sin(p*7+phase*1.4+off))*(1+bands.bass*.3+beat*.08)*amp;               // how far up the light reaches
+      const fold=.5+.5*Math.sin(p*11+phase*1.6+off*3)*Math.sin(p*4-phase*.6);                          // brighter folds along the curtain
+      const fade=Math.min(1,p*3,(1-p)*3);
+      const al=(.3+fold*.25)*(.75+bands.mid*.5+beat*.12)*fade;
+      if(al<.01)continue;ox.globalAlpha=Math.min(1,al);ox.drawImage(spr,x,base-len,1,len*1.08)}});
+  ox.globalAlpha=1;
+  cx.globalCompositeOperation=dark?"lighter":"source-over";cx.globalAlpha=A*colors.alpha;cx.imageSmoothingEnabled=true;cx.imageSmoothingQuality="high";
+  cx.drawImage(oc,0,0,W,H);
+  cx.globalAlpha=1;
+  // soft glow under the curtains
+  const g=cx.createLinearGradient(0,0,0,H*.4);g.addColorStop(0,hexA(colors.purple,(.04+beat*.02)*A*colors.alpha));g.addColorStop(1,hexA(colors.blue,0));
+  cx.fillStyle=g;cx.fillRect(0,0,W,H*.4);
+  cx.globalCompositeOperation="source-over";
+}
+/* highlight the menu link for the section in view */
+const navLinks=[...document.querySelectorAll("nav a")];
+// the active link is the last section whose top has passed just under the sticky header
+const spySecs=[...document.querySelectorAll("main section[id]")];let navLock=0,navTick=false;
+function setActive(id){navLinks.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+id))}
+function spy(){navTick=false;if(Date.now()<navLock)return;
+  const off=(document.querySelector("header").offsetHeight||60)+32;let cur=null;
+  for(const s of spySecs){if(s.getBoundingClientRect().top-off<=0)cur=s.id}
+  if(scrollY>0&&innerHeight+scrollY>=document.documentElement.scrollHeight-4)cur=spySecs[spySecs.length-1].id;
+  setActive(cur)}
+addEventListener("scroll",()=>{if(!navTick){navTick=true;requestAnimationFrame(spy)}},{passive:true});
+navLinks.forEach(a=>a.addEventListener("click",()=>{setActive(a.getAttribute("href").slice(1));navLock=Date.now()+900}));
+spy();
+function hexA(c,a){a=Math.max(0,Math.min(1,a));
+  if(c.startsWith("#")){let h=c.slice(1);if(h.length===3)h=h.split("").map(x=>x+x).join("");const n=parseInt(h,16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
+  return c}
+function frame(now){draw(now);if(playing||sparks.length||beat>.02||!reduce){requestAnimationFrame(frame)}else running=false}
+function kick(){if(!running){running=true;requestAnimationFrame(frame)}}
+kick();
+
+/* ---------- covers ---------- */
+function coverFish(){
+  const c=document.getElementById("cov-fish"),x=c.getContext("2d"),W=640,H=360;
+  let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,"#c7b8ff");g.addColorStop(.45,"#8f9bff");g.addColorStop(.46,"#3d63e6");g.addColorStop(1,"#1d2a8a");
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.fillStyle="#f4f0ff";x.beginPath();x.arc(470,140,44,0,7);x.fill();
+  x.fillStyle="#3a2f8f";x.beginPath();x.ellipse(170,166,150,34,0,Math.PI,0);x.fill();
+  x.fillStyle="#5a49c4";x.beginPath();x.ellipse(200,166,90,52,0,Math.PI,0);x.fill();
+  x.fillStyle="#e9e3ff";x.fillRect(40,163,270,5);
+  x.strokeStyle="#20195a";x.lineWidth=6;x.beginPath();x.moveTo(250,166);x.lineTo(250,120);x.stroke();
+  x.strokeStyle="rgba(255,255,255,.35)";x.lineWidth=2;
+  for(let i=0;i<14;i++){const y=185+i*13,o=(i%2)*40;x.beginPath();for(let k=-1;k<9;k++){x.moveTo(k*90+o,y);x.quadraticCurveTo(k*90+o+22,y-5,k*90+o+45,y)}x.stroke()}
+  x.strokeStyle="#151040";x.lineWidth=2;x.beginPath();x.moveTo(250,120);x.quadraticCurveTo(380,90,430,250);x.stroke();
+  x.fillStyle="#fff";x.beginPath();x.arc(430,250,9,0,7);x.fill();x.fillStyle="#a35cff";x.beginPath();x.arc(430,250,9,Math.PI,0);x.fill();
+  x.strokeStyle="rgba(255,255,255,.7)";x.beginPath();x.ellipse(430,258,24,5,0,0,7);x.stroke();
+  x.fillStyle="#ffffff";x.globalAlpha=.85;x.save();x.translate(500,315);x.beginPath();x.ellipse(0,0,26,11,0,0,7);x.fill();x.beginPath();x.moveTo(22,0);x.lineTo(40,-12);x.lineTo(40,12);x.fill();x.restore();x.globalAlpha=1;
+}
+function coverMF(){
+  const c=document.getElementById("cov-mf"),x=c.getContext("2d"),W=640,H=360;
+  for(let gy=0;gy<H;gy+=24)for(let gx=0;gx<W;gx+=24){x.fillStyle=((gx+gy)/24)%2?"#1c1a4a":"#191745";x.fillRect(gx,gy,24,24)}
+  x.fillStyle="#3b3488";[[48,48,168,24],[48,48,24,144],[408,72,192,24],[576,72,24,216],[120,264,240,24]].forEach(r=>x.fillRect(...r));
+  x.strokeStyle="#b56bff";x.lineWidth=3;x.globalAlpha=.9;x.setLineDash([10,8]);
+  [[320,190,520,140],[320,190,470,260],[320,190,200,120]].forEach(([a,b,c2,d])=>{x.beginPath();x.moveTo(a,b);x.lineTo(c2,d);x.stroke()});
+  x.setLineDash([]);x.globalAlpha=1;
+  x.fillStyle="#7fd0ff";[[520,140],[470,260],[200,120]].forEach(([a,b])=>x.fillRect(a-4,b-4,8,8));
+  x.fillStyle="#f4f1ff";x.fillRect(305,175,30,30);x.fillStyle="#b56bff";x.fillRect(335,186,16,8);
+  [[530,128],[480,250],[180,108],[430,300]].forEach(([a,b],i)=>{x.fillStyle=i===3?"#6f7bd9":"#5b8cff";x.fillRect(a,b,24,24)});
+  const v=x.createRadialGradient(320,190,60,320,190,380);v.addColorStop(0,"rgba(0,0,0,0)");v.addColorStop(1,"rgba(150,80,255,.32)");x.fillStyle=v;x.fillRect(0,0,W,H);
+  x.fillStyle="#c9a2ff";x.font="600 14px 'IBM Plex Mono', monospace";x.fillText("× 0.25",24,336);
+}
+function rr(x,X,Y,w,h,r){x.beginPath();if(x.roundRect)x.roundRect(X,Y,w,h,r);else x.rect(X,Y,w,h)}
+function coverCR(){
+  const c=document.getElementById("cov-cr"),x=c.getContext("2d"),W=640,H=360;
+  let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,"#a9bcff");g.addColorStop(1,"#6a4fe0");x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.fillStyle="rgba(255,255,255,.35)";[[90,70,30],[480,56,24],[300,118,18]].forEach(([a,b,r])=>{x.beginPath();x.arc(a,b,r,0,7);x.arc(a+r*1.1,b+6,r*.8,0,7);x.arc(a-r,b+8,r*.7,0,7);x.fill()});
+  [[40,280,120],[210,230,100],[360,262,120],[500,200,110]].forEach(([px,py,pw])=>{x.fillStyle="#2b2780";rr(x,px,py+10,pw,18,8);x.fill();x.fillStyle="#eef0ff";rr(x,px,py,pw,16,8);x.fill()});
+  x.strokeStyle="rgba(255,255,255,.85)";x.lineWidth=3;x.setLineDash([8,8]);x.beginPath();x.moveTo(110,270);x.quadraticCurveTo(180,120,246,166);x.stroke();x.setLineDash([]);
+  x.save();x.translate(262,150);x.rotate(.15);
+  x.fillStyle="#3557f5";rr(x,-18,-30,36,64,18);x.fill();x.fillStyle="#d6e2ff";rr(x,-10,-18,22,12,6);x.fill();
+  x.fillStyle="#1b1650";x.fillRect(-17,-38,34,6);x.fillRect(-11,-62,22,25);x.fillStyle="#a35cff";x.fillRect(-11,-44,22,5);x.restore();
+  x.fillStyle="#1b1650";x.beginPath();for(let i=0;i<14;i++){const a=i/14*Math.PI*2,r=i%2?11:20;x.lineTo(420+Math.cos(a)*r,238+Math.sin(a)*r)}x.closePath();x.fill();
+  x.fillStyle="#1b1650";x.fillRect(585,128,4,74);
+  for(let i=0;i<3;i++)for(let j=0;j<4;j++){x.fillStyle=(i+j)%2?"#ffffff":"#1b1650";x.fillRect(589+j*9,128+i*9,9,9)}
+}
+function coverWW(){
+  const c=document.getElementById("cov-ww"),x=c.getContext("2d"),W=640,H=360;
+  let g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,"#141a5c");g.addColorStop(1,"#3b1f7a");x.fillStyle=g;x.fillRect(0,0,W,H);
+  for(let i=0;i<17;i++){const y=24+i*20,a=.12+.5*Math.abs(Math.sin(i*1.7));
+    x.strokeStyle=`rgba(${i%2?"190,170,255":"150,190,255"},${a.toFixed(2)})`;x.lineWidth=i%3?1.5:3;
+    x.beginPath();x.moveTo(-20,y);x.bezierCurveTo(160,y-40+((i*37)%50),380,y+50-((i*23)%60),660,y-10);x.stroke()}
+  x.fillStyle="rgba(235,230,255,.85)";
+  [[120,90],[260,210],[410,130],[540,260],[330,70],[200,300]].forEach(([a,b],i)=>{x.save();x.translate(a,b);x.rotate(i*.9);x.beginPath();x.ellipse(0,0,7,3,0,0,7);x.fill();x.restore()});
+}
+
+
+/* game order on the page: Capsule Rush, Manhattan Flatline, Windward, Fish Isle */
+const GAME_ORDER=["cr","mf","ww","fish"];
+{const gs=document.querySelector(".games");GAME_ORDER.forEach(k=>{const a=gs.querySelector(`ol[data-game="${k}"]`);if(a)gs.appendChild(a.closest(".game"))});}
+document.querySelectorAll(".game").forEach(g=>{const body=g.querySelector(".game-body"),act=document.createElement("div");act.className="actions";
+  // the info opens as a panel over the top of the card, so no card ever changes size
+  const panel=document.createElement("div");panel.className="info-panel";
+  const cover=g.querySelector(".cover");if(cover)panel.appendChild(cover); // the artwork only shows inside More info // the artwork only shows inside More info
+  body.querySelectorAll(":scope > p, :scope > dl.specs").forEach(el=>panel.appendChild(el));g.appendChild(panel);
+  const fit=()=>{};
+  addEventListener("resize",()=>{if(g.classList.contains("info-open"))fit()});
+  const play=body.querySelector(".btn");if(play)act.appendChild(play);
+  const b=document.createElement("button");b.type="button";b.className="info-btn";b.setAttribute("aria-expanded","false");
+  b.innerHTML='<span data-i="info_show">More info</span><i class="ichev" aria-hidden="true">▾</i>';
+  b.addEventListener("click",()=>{const o=g.classList.toggle("info-open"),s=b.querySelector("span");if(o){fit();panel.scrollTop=0}b.setAttribute("aria-expanded",o);s.dataset.i=o?"info_hide":"info_show";s.textContent=T[lang][s.dataset.i]});
+  act.appendChild(b);body.appendChild(act);
+  g._closeInfo=()=>{if(!g.classList.contains("info-open"))return;g.classList.remove("info-open");const s=b.querySelector("span");b.setAttribute("aria-expanded","false");s.dataset.i="info_show";s.textContent=T[lang].info_show};
+  b.addEventListener("click",()=>{if(g.classList.contains("info-open"))document.querySelectorAll("details.ost[open]").forEach(d=>d.open=false)});
+  document.addEventListener("click",e=>{if(!g.contains(e.target))g._closeInfo()});
+  g.addEventListener("keydown",e=>{if(e.key==="Escape"&&g.classList.contains("info-open"))b.click()})});
+/* lowkey interface sounds, synthesized on the fly (no audio files) */
+let sndOn=true,uiCtx=null;
+try{sndOn=localStorage.getItem("uisnd")!=="off"}catch(e){}
+function blip(f1,f2,dur,type,vol,delay){
+  const t=uiCtx.currentTime+(delay||0),o=uiCtx.createOscillator(),g=uiCtx.createGain();
+  o.type=type;o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.006);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g);g.connect(uiCtx.destination);o.start(t);o.stop(t+dur+.02);}
+function ui(kind){if(!sndOn)return;
+  try{if(!uiCtx)uiCtx=new (window.AudioContext||window.webkitAudioContext)();if(uiCtx.state!=="running")uiCtx.resume();}catch(e){return}
+  const v=.026; // kept quiet and low-pitched on purpose
+  if(kind==="open"){blip(440,560,.07,"sine",v);blip(560,700,.08,"sine",v*.75,.05)}
+  else if(kind==="close"){blip(620,500,.07,"sine",v);blip(500,390,.08,"sine",v*.75,.05)}
+  else if(kind==="tick"){blip(900,760,.03,"sine",v*.7)}
+  else if(kind==="link"){blip(523,530,.09,"sine",v*.8);blip(659,666,.09,"sine",v*.65,.045);blip(784,790,.13,"sine",v*.5,.09)}
+  else{blip(620,430,.05,"sine",v*.9)}}
+function updSnd(){const b=document.getElementById("sndbtn"),L=T[lang]||T.en;b.setAttribute("aria-pressed",sndOn);const s=sndOn?L.snd_on:L.snd_off;b.setAttribute("aria-label",s);b.title=s}
+document.getElementById("sndbtn").addEventListener("click",()=>{sndOn=!sndOn;try{localStorage.setItem("uisnd",sndOn?"on":"off")}catch(e){}updSnd();if(sndOn)ui("tick")});
+document.addEventListener("click",e=>{
+  const el=e.target.closest("button,a,summary,li[role=button],li[role=option],select");if(!el||el.id==="sndbtn")return;
+  if(el.closest("ol.tracks li[data-idx]")||el.matches("[data-toggle],.skip"))return; // music controls stay silent
+  if(el.matches("summary")){const d=el.parentElement;if(d.classList.contains("no-music"))return;ui(d.open?"close":"open");return}
+  if(el.matches("li[role=button]")){ui(el.getAttribute("aria-expanded")==="true"?"close":"open");return}
+  if(el.matches(".info-btn")){ui(el.getAttribute("aria-expanded")==="true"?"close":"open");return}
+  if(el.matches(".chip,li[role=option],#langbtn")){ui("tick");return}
+  if(el.matches("a")){ui("link");return}
+  ui("click")},true);
+function fitTags(){document.querySelectorAll(".game-body .tags").forEach(box=>{
+  box.querySelectorAll(".tag-more").forEach(m=>m.remove());const tags=[...box.querySelectorAll(".tag")];tags.forEach(t=>t.hidden=false);
+  const R=()=>box.getBoundingClientRect().right,over=()=>{const v=[...box.children].filter(c=>!c.hidden);return v.length&&v[v.length-1].getBoundingClientRect().right>R()+.5};
+  if(!box.clientWidth||!over())return;
+  const more=document.createElement("span");more.className="tag tag-more";box.appendChild(more);const hid=[];
+  for(let i=tags.length-1;i>0;i--){tags[i].hidden=true;hid.unshift(tags[i].textContent);more.textContent="+"+hid.length;if(!over())break}
+  const pop=document.createElement("span");pop.className="tag-pop";
+  hid.forEach(h=>{const c=document.createElement("span");c.className="tag";c.textContent=h;pop.appendChild(c)});more.appendChild(pop)})}
+addEventListener("resize",()=>{clearTimeout(fitTags.t);fitTags.t=setTimeout(fitTags,120)});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitTags);
+/* theme menu */
+const STYLES=[["aurora","Aurora","#3557f5","#8237f0"]];   // only one look now, so the theme menu is hidden
+const sbtn=document.getElementById("stylebtn"),smenu=document.getElementById("stylemenu");
+const closeStyles=()=>{smenu.hidden=true;sbtn.setAttribute("aria-expanded","false")};
+STYLES.forEach(([k,n,c1,c2])=>{const li=document.createElement("li");li.setAttribute("role","option");li.dataset.style=k;li.tabIndex=-1;
+  li.innerHTML=`<span class="swatch" style="background:linear-gradient(135deg,${c1},${c2})"></span>${n}`;
+  li.addEventListener("click",()=>{setStyle(k);closeStyles();sbtn.focus()});smenu.appendChild(li)});
+function setStyle(s){if(!STYLES.some(x=>x[0]===s))s="aurora";document.documentElement.dataset.style=s;try{localStorage.setItem("style",s)}catch(e){}
+  smenu.querySelectorAll("li").forEach(li=>li.setAttribute("aria-selected",li.dataset.style===s));readColors();if(!running)draw(performance.now());
+  setTimeout(fitTags,60)}
+sbtn.addEventListener("click",()=>{const open=smenu.hidden;smenu.hidden=!open;sbtn.setAttribute("aria-expanded",open);if(open)(smenu.querySelector('[aria-selected="true"]')||smenu.firstElementChild).focus()});
+smenu.addEventListener("keydown",e=>{const items=[...smenu.children],i=items.indexOf(document.activeElement);
+  if(e.key==="ArrowDown"){e.preventDefault();items[(i+1)%items.length].focus()}else if(e.key==="ArrowUp"){e.preventDefault();items[(i-1+items.length)%items.length].focus()}
+  else if(e.key==="Enter"||e.key===" "){e.preventDefault();document.activeElement.click()}else if(e.key==="Escape"){closeStyles();sbtn.focus()}else if(e.key==="Tab")closeStyles()});
+document.addEventListener("click",e=>{if(!document.getElementById("stylewrap").contains(e.target))closeStyles()});
+{let st="aurora";try{st=localStorage.getItem("style")||"aurora"}catch(e){}setStyle(st)}
+/* only one floating panel at a time: opening a soundtrack closes any open More info, and the other way round */
+document.querySelectorAll("details.ost").forEach(d=>d.addEventListener("toggle",()=>{if(d.open)document.querySelectorAll(".game.info-open").forEach(g=>g._closeInfo&&g._closeInfo())}));
+let saved=null;try{saved=localStorage.getItem("lang")}catch(e){}
+setLang(saved||"en");
+
+/* screenshots open in a lightbox on the page itself (no new tab), close with a click, the × or Esc */
+document.querySelectorAll(".impl-fig a").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();
+  const box=document.createElement("div");box.className="lightbox";box.setAttribute("role","dialog");box.setAttribute("aria-modal","true");
+  box.innerHTML=`<img src="${a.getAttribute("href")}" alt="${a.querySelector("img").alt}"><button type="button" aria-label="Close">×</button>`;
+  const close=ev=>{if(ev)ev.stopPropagation();box.remove();document.removeEventListener("keydown",esc,true);a.focus()};
+  const esc=ev=>{if(ev.key==="Escape"){ev.stopPropagation();close()}};
+  box.addEventListener("click",close);document.addEventListener("keydown",esc,true);document.body.appendChild(box);box.querySelector("button").focus()}));
+</script>
+</body>
+</html>
