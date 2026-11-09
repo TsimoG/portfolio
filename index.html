@@ -404,9 +404,8 @@ header,.mini{backdrop-filter:blur(10px)!important;-webkit-backdrop-filter:blur(1
 ol.tracks.featured li:hover{background:color-mix(in srgb,var(--purple) 12%,var(--surface-solid));border-color:color-mix(in srgb,var(--purple) 45%,var(--line))}
 /* sections without pop-ups are skipped by the browser until they come near the screen */
 #skills,#thesis,#about{content-visibility:auto;contain-intrinsic-size:auto 700px}
-@keyframes navFlash{0%{box-shadow:0 0 0 1px color-mix(in srgb,var(--purple) 70%,transparent),0 0 22px -6px color-mix(in srgb,var(--purple) 60%,transparent)}100%{box-shadow:0 0 0 1px transparent,0 0 22px -6px transparent}}
-section.nav-flash :is(.panel,.cta-band,ol.tracks.featured li){animation:navFlash 1.4s ease-out}
-@media (prefers-reduced-motion:reduce){section.nav-flash :is(.panel,.cta-band,ol.tracks.featured li){animation:none}}
+@keyframes navFlash{0%,25%{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--purple) 85%,transparent),0 0 26px -4px color-mix(in srgb,var(--purple) 70%,transparent)}100%{box-shadow:0 0 0 1.5px transparent,0 0 26px -4px transparent}}
+section.nav-flash :is(.panel,.cta-band,ol.tracks.featured li){animation:navFlash 1.6s ease-out}
 </style>
 </head>
 <body>
