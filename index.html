@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Simon Nilsson Portfolio</title>
 <meta name="description" content="Simon Nilsson – composer, sound engineer and game developer. Music and sound for games and film, plus game and web development in C# and JavaScript.">
-<!-- link previews (LinkedIn, Discord, mail…). If the site moves to its own domain, change the three tsimog.github.io addresses below -->
+<!-- link previews (LinkedIn, Discord, mail…). Uses the custom domain simonilsa.com -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Simon Nilsson – Composer, sound engineer & game developer">
 <meta property="og:description" content="Music & sound for games and film">
-<meta property="og:image" content="https://tsimog.github.io/portfolio/img/og-image.jpg">
-<meta property="og:url" content="https://tsimog.github.io/portfolio/">
+<meta property="og:image" content="https://simonilsa.com/img/og-image.jpg">
+<meta property="og:url" content="https://simonilsa.com/">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://tsimog.github.io/portfolio/img/og-image.jpg">
+<meta name="twitter:image" content="https://simonilsa.com/img/og-image.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Instrument+Serif:ital@0;1&display=swap">
 <style>
@@ -76,7 +76,6 @@ nav a.active{box-shadow:inset 0 -2px 0 var(--purple)}
 .lang-menu li[aria-selected="true"]{color:var(--purple);font-weight:600}
 .lang-menu li small{margin-left:auto;font:400 .72rem var(--f-mono);color:var(--muted)}
 @media (max-width:680px){nav{order:3;width:100%;justify-content:space-between;margin-right:0}#stylewrap{margin-left:auto}}
-#stylewrap{display:none}
 
 /* hero */
 .hero{padding-block:88px 64px;display:grid;grid-template-columns:minmax(0,760px)}
@@ -449,6 +448,19 @@ html{overflow-x:clip}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .deco{opacity:.26}}
 :root[data-theme="light"] .deco,:root:not([data-theme="dark"]) .deco{opacity:.3}
 .d-hero{opacity:.22}
+/* game artwork as a small inset picture at the top of each card */
+.game::before{content:"";display:block;margin:10px 10px 0;aspect-ratio:2.3;border-radius:11px;background:var(--art,var(--tint)) var(--artpos,50% 50%)/cover no-repeat;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 10%,transparent);transition:filter .35s ease}
+.game:hover::before{filter:saturate(1.12) brightness(1.05)}
+.game:has(ol[data-game="cr"]){--art:url("img/capsule-rush.png?v=2");--artpos:50% 0%}
+.game:has(ol[data-game="fish"]){--art:url("img/fish-isle.jpg");--artpos:25% 50%}
+.game:has(ol[data-game="mf"]){--art:url("img/manhattan-flatline.jpg");--artpos:50% 55%}
+.game:has(ol[data-game="ww"]){--art:url("img/windward.jpg");--artpos:50% 10%}
+.games .game-body{padding-top:12px}
+.info-panel > .cover{display:none}
+.info-panel > :nth-child(2){margin-top:16px}
+
+#stylewrap{display:none}
 </style>
 </head>
 <body>
