@@ -449,9 +449,9 @@ html{overflow-x:clip}
 :root[data-theme="light"] .deco,:root:not([data-theme="dark"]) .deco{opacity:.3}
 .d-hero{opacity:.22}
 /* game artwork as a small inset picture at the top of each card */
-.game::before{content:"";display:block;margin:10px 10px 0;aspect-ratio:2.3;border-radius:11px;background:var(--art,var(--tint)) var(--artpos,50% 50%)/cover no-repeat;
-  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 10%,transparent);transition:filter .35s ease}
-.game:hover::before{filter:saturate(1.12) brightness(1.05)}
+.card-art{display:block;margin:10px 10px 0;aspect-ratio:2.3;border-radius:11px;overflow:hidden;line-height:0;background:var(--tint)}
+.card-art img{width:100%;height:100%;object-fit:cover;display:block;outline:1px solid color-mix(in srgb,var(--ink) 10%,transparent);outline-offset:-1px;border-radius:11px;transition:filter .35s ease}
+.game:hover .card-art img{filter:saturate(1.12) brightness(1.05)}
 .games .game-body{padding-top:12px}
 .info-panel > .cover{display:none}
 .info-panel > :nth-child(2){margin-top:16px}
@@ -906,7 +906,7 @@ const PLAY='<path d="M7 4v16l13-8z"/>',PAUSE='<path d="M6 4h4v16H6zM14 4h4v16h-4
 
 const GENRES=["orchestral","ambient","space","asian","desert","sad","acoustic","lofi","chiptune","synthwave","electronic","ost","other"];
 /* the tracks shown in the Featured row, in this order */
-const FEATURED=["Neon Lobby","Velvet Getaway","Elven Majesty","Astral Shores","Space Hunter"];
+const FEATURED=["Space Hunter","Neon Lobby","Velvet Getaway","Moonlit Tide","Whispering Pines"];
 let gFilter="all",sortBy="genre",listOrder=[],genreRank={};
 const gRank=g=>g in genreRank?genreRank[g]:99;
 const collapsed=new Set(),opened=new Set();
@@ -1037,7 +1037,7 @@ document.querySelectorAll("[data-seek]").forEach(r=>{
   r.addEventListener("pointerdown",()=>r.dataset.drag="1");r.addEventListener("pointerup",()=>delete r.dataset.drag);r.addEventListener("change",()=>delete r.dataset.drag);
   r.addEventListener("input",()=>{load(cur);const d=audio.duration||TRACKS[cur].dur;audio.currentTime=r.value/1000*d;r.style.setProperty("--p",r.value/10+"%");
     document.querySelectorAll("[data-cur]").forEach(e=>e.textContent=fmt(audio.currentTime))});});
-function syncUI(){
+function syncUI(){document.documentElement.classList.toggle("is-playing",playing);
   const t=TRACKS[cur];
   document.querySelectorAll("[data-now-title]").forEach(e=>e.textContent=t.name);
   document.querySelectorAll("[data-now-sub]").forEach(e=>e.textContent=tagLine(t));
@@ -1200,6 +1200,7 @@ function hexA(c,a){a=Math.max(0,Math.min(1,a));
   return c}
 /* the background is redrawn at most 40 times a second while music plays and 20 when it's quiet (the motion is slow, so it looks the same),
    and it stops completely while the tab is hidden */
+
 let lastDraw=0,lastScroll=0;
 addEventListener("scroll",()=>{lastScroll=performance.now()},{passive:true});
 function frame(now){
@@ -1274,7 +1275,10 @@ document.querySelectorAll(".game").forEach(g=>{const body=g.querySelector(".game
   // the info opens as a panel over the top of the card, so no card ever changes size
   const panel=document.createElement("div");panel.className="info-panel";
   const cover=g.querySelector(".cover");if(cover)panel.appendChild(cover);
-  {const im=cover&&cover.querySelector("img");if(im){g.style.setProperty("--art",`url("${im.src}")`);g.style.setProperty("--artpos",im.style.objectPosition||"50% 50%")}}   // the card picture reuses the cover image // the artwork only shows inside More info // the artwork only shows inside More info
+  // the card shows a real copy of the cover picture at the top (a real <img>, so it loads wherever the page is hosted)
+  {const im=cover&&cover.querySelector("img");if(im){const box=document.createElement("div"),cp=document.createElement("img");box.className="card-art";
+    cp.alt="";cp.decoding="async";cp.src=im.getAttribute("src");cp.style.objectPosition=im.style.objectPosition||"50% 50%";box.appendChild(cp);g.insertBefore(box,g.firstChild);
+    new MutationObserver(()=>{if(cp.getAttribute("src")!==im.getAttribute("src"))cp.src=im.getAttribute("src")}).observe(im,{attributes:true,attributeFilter:["src"]})}}
   body.querySelectorAll(":scope > p, :scope > dl.specs").forEach(el=>panel.appendChild(el));g.appendChild(panel);
   const fit=()=>{};
   addEventListener("resize",()=>{if(g.classList.contains("info-open"))fit()});
