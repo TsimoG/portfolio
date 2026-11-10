@@ -452,10 +452,6 @@ html{overflow-x:clip}
 .game::before{content:"";display:block;margin:10px 10px 0;aspect-ratio:2.3;border-radius:11px;background:var(--art,var(--tint)) var(--artpos,50% 50%)/cover no-repeat;
   box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 10%,transparent);transition:filter .35s ease}
 .game:hover::before{filter:saturate(1.12) brightness(1.05)}
-.game:has(ol[data-game="cr"]){--art:url("img/capsule-rush.png?v=2");--artpos:50% 0%}
-.game:has(ol[data-game="fish"]){--art:url("img/fish-isle.jpg");--artpos:25% 50%}
-.game:has(ol[data-game="mf"]){--art:url("img/manhattan-flatline.jpg");--artpos:50% 55%}
-.game:has(ol[data-game="ww"]){--art:url("img/windward.jpg");--artpos:50% 10%}
 .games .game-body{padding-top:12px}
 .info-panel > .cover{display:none}
 .info-panel > :nth-child(2){margin-top:16px}
@@ -1277,7 +1273,8 @@ const GAME_ORDER=["cr","mf","ww","fish"];
 document.querySelectorAll(".game").forEach(g=>{const body=g.querySelector(".game-body"),act=document.createElement("div");act.className="actions";
   // the info opens as a panel over the top of the card, so no card ever changes size
   const panel=document.createElement("div");panel.className="info-panel";
-  const cover=g.querySelector(".cover");if(cover)panel.appendChild(cover); // the artwork only shows inside More info // the artwork only shows inside More info
+  const cover=g.querySelector(".cover");if(cover)panel.appendChild(cover);
+  {const im=cover&&cover.querySelector("img");if(im){g.style.setProperty("--art",`url("${im.src}")`);g.style.setProperty("--artpos",im.style.objectPosition||"50% 50%")}}   // the card picture reuses the cover image // the artwork only shows inside More info // the artwork only shows inside More info
   body.querySelectorAll(":scope > p, :scope > dl.specs").forEach(el=>panel.appendChild(el));g.appendChild(panel);
   const fit=()=>{};
   addEventListener("resize",()=>{if(g.classList.contains("info-open"))fit()});
